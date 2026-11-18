@@ -248,6 +248,7 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
 .tr-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:var(--acc);color:var(--onacc);display:grid;place-items:center;font-size:26px;padding-left:5px;box-shadow:0 6px 24px color-mix(in srgb,#000 50%,transparent)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+<link rel="stylesheet" href="css/chronicle.css">
 </head>
 <body>
 
@@ -264,19 +265,28 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
 </div>
 
 <div class="hero" id="hero">
-  <svg class="land" id="land" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
   <div class="wrap hero-in">
     <div class="topbar">
       <div class="brand" id="brand">Голоархив · Лотал</div>
+      <nav class="site-nav" aria-label="Разделы">
+        <a href="#catalog">Хронология</a>
+        <a href="#holonet">Голонет</a>
+      </nav>
       <button class="btn" id="themeBtn" type="button">◐ Сменить планету</button>
     </div>
-    <div class="titlerow">
-      <h1>Хроники Галактики</h1>
-      <button class="mascot" id="mascot" type="button" aria-label="Маскот планеты"><span class="bubble" id="bubble" hidden></span><span id="mascotArt"></span></button>
+    <div class="hero-stage">
+      <div class="hero-copy">
+        <h1>Хроники <span>Галактики</span></h1>
+        <p class="lead">Вся экранная канва «Звёздных войн» в одном месте: фильмы, сериалы и анимация, разложенные по годам внутри Галактики, с отметками просмотра до каждой серии и тем, что ещё только выйдет.</p>
+      </div>
+      <div class="hero-visual">
+        <svg class="land" id="land" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+        <button class="mascot" id="mascot" type="button" aria-label="Маскот планеты"><span class="bubble" id="bubble" hidden></span><span id="mascotArt"></span></button>
+      </div>
     </div>
-    <p class="lead">Вся экранная канва «Звёздных войн» в одном месте: фильмы, сериалы и анимация, разложенные по годам внутри Галактики, с отметками просмотра до каждой серии и тем, что ещё только выйдет.</p>
     <div class="dash">
-      <div class="panel">
+      <div class="panel progress-panel">
+        <h2>Прогресс просмотра</h2>
         <div class="stats">
           <div class="stat"><b class="mono" id="sPct">0%</b><span>саги просмотрено</span></div>
           <div class="stat"><b class="mono" id="sUnits">0</b><span>серий и фильмов</span></div>
@@ -287,19 +297,14 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
       </div>
       <div class="panel next" id="nextBox"></div>
     </div>
-    <div class="ribbon" id="ribbon" aria-label="Все постеры по порядку выхода"></div>
+    <section class="poster-strip" aria-labelledby="posterTitle">
+      <h2 id="posterTitle">Постеры по порядку выхода</h2>
+      <div class="ribbon" id="ribbon" aria-labelledby="posterTitle"></div>
+    </section>
   </div>
 </div>
 
-<section class="wrap holonet" id="holonet" aria-labelledby="holoT">
-  <div class="holo-h">
-    <h2 id="holoT"><span class="holo-dot" aria-hidden="true"></span>Голонет</h2>
-    <span class="mono holo-sub" id="holoSub"></span>
-    <button class="btn" type="button" id="newsAll">Все новости</button>
-  </div>
-  <div class="news-row" id="newsRow"></div>
-</section>
-
+<div id="catalog">
 <div class="controls">
   <div class="wrap">
     <div class="seg" role="group" aria-label="Порядок">
@@ -319,7 +324,18 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
 </div>
 
 <div class="wrap eras-wrap"><div class="eras" id="eras"></div></div>
-<main class="wrap" id="list"></main>
+<div class="wrap archive-layout">
+  <main id="list" aria-label="Хронология просмотра"></main>
+  <section class="holonet" id="holonet" aria-labelledby="holoT">
+    <div class="holo-h">
+      <h2 id="holoT">Голонет</h2>
+      <span class="mono holo-sub" id="holoSub"></span>
+      <button class="btn" type="button" id="newsAll">Все новости</button>
+    </div>
+    <div class="news-row" id="newsRow"></div>
+  </section>
+</div>
+</div>
 <footer class="wrap">Только экранный канон Lucasfilm (с 2014 года «Войны клонов» и фильмы вошли в него целиком). Годы указаны в системе ДБЯ / ПБЯ — до и после битвы при Явине. Порядок «Войн клонов» — официальная хронология StarWars.com. Даты будущих премьер могут сдвигаться.</footer>
 
 <div class="sheet" id="sheet" hidden>
