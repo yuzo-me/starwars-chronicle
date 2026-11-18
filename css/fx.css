@@ -24,6 +24,11 @@ h1, h2, h3 { font-family: var(--f-disp); font-weight: 700; letter-spacing: .005e
 .c-title h3, .news h3, .next h3 { font-family: var(--f-disp); font-weight: 700; }
 .stat b { font-family: var(--f-disp); font-weight: 900; }
 
+/* ============ Кнопка языка ============ */
+.top-actions { justify-self: end; display: flex; gap: 8px; align-items: center; }
+.lang-btn { font-family: var(--f-mono); font-weight: 600; letter-spacing: .08em; min-width: 46px; color: var(--acc); }
+@media (max-width: 380px) { .top-actions { gap: 5px; } .lang-btn { min-width: 38px; padding-inline: 6px; } }
+
 /* ============ Цвета эпох ============ */
 [data-era="hr"],     #era-hr     { --era: #f0c75e; }
 [data-era="fall"],   #era-fall   { --era: #62b0ff; }

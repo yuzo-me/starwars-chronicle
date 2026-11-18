@@ -1,35 +1,57 @@
 // Лента «Голонет». Новые записи добавляются в НАЧАЛО массива.
 // d: дата публикации новости (ГГГГ-ММ-ДД) · tag: Премьера | Анонс | Дата | Трейлер | Кастинг | Продление | Событие | Слух
-// t: заголовок · s: лид, 1–2 предложения · b: подробный текст, 4–8 предложений, абзацы через \n\n
+// t / s / b — по-русски: заголовок, лид (1–2 предложения), подробный текст (4–8 предложений, абзацы через \n\n)
+// te / se / be — то же самое по-английски (обязательно для новых записей)
 // src: ссылка на первоисточник · srcN: имя сайта · rel: id тайтлов из data.js · img: "news/<файл>.jpg" или "posters/<id>.jpg"
 // Всё — пересказ своими словами, без цитат.
 window.NEWS = [
   {d:"2026-11-13",tag:"Событие",t:"Lucasfilm объявила годовое празднование 50-летия «Звёздных войн»",
    s:"В 2027 году сага отмечает полвека. Студия обещает серию событий по всему миру на протяжении всего года.",
    b:"Lucasfilm и Disney анонсировали празднование, которое растянется на весь 2027 год: 25 мая исполнится ровно 50 лет с выхода первого фильма.\n\nВ программе — возвращение отреставрированной «Новой надежды» в кинотеатры, документальный фильм о саге для Disney+, а также коллаборации с партнёрами: Aston Martin готовит юбилейный проект, Hasbro перезапускает ретро-линейку 3,75-дюймовых фигурок в духе старых игрушек Kenner.\n\nПраздник совпадает с насыщенным годом для франшизы: в январе выходит второй сезон «Асоки», в мае — «Звёздный истребитель».",
+   te:"Lucasfilm announces a year-long celebration of Star Wars' 50th anniversary",
+   se:"The saga turns fifty in 2027. The studio promises events around the world throughout the year.",
+   be:"Lucasfilm and Disney announced a celebration spanning all of 2027: May 25 marks exactly fifty years since the first film opened.\n\nThe plans include a restored A New Hope back in theaters, a documentary about the saga for Disney+, and partner projects: Aston Martin is preparing an anniversary collaboration, and Hasbro is relaunching a retro 3.75-inch figure line in the spirit of the original Kenner toys.\n\nThe anniversary lands in a busy year for the franchise: Ahsoka Season 2 arrives in January and Starfighter in May.",
    src:"https://press.disney.co.uk/news/lucasfilm-and-disney-announce-a-global-year-long-celebration-of-the-50th-anniversary-of-star-wars",srcN:"press.disney.co.uk",rel:[]},
   {d:"2026-11-13",tag:"Событие",t:"«Новая надежда» вернётся в кинотеатры, в том числе в IMAX 70 мм",
    s:"Оригинальный фильм 1977 года отреставрирован и выйдет в прокат в нескольких форматах в феврале 2027 года.",
    b:"К 50-летию саги Lucasfilm подготовила реставрацию первого фильма. Его покажут в кинотеатрах в разных форматах, включая плёночный IMAX 70 мм — редкий формат, в котором сейчас выходят лишь отдельные крупные релизы.\n\nСтарт проката запланирован на февраль 2027 года; в части источников называется 19 февраля. Позже, в марте, фильм также покажут в купольных залах Cosm.\n\nЕсли ты проходишь сагу в порядке выхода — это шанс увидеть самое начало так, как его видели зрители в 1977-м.",
+   te:"A New Hope returns to theaters, including IMAX 70mm",
+   se:"The original 1977 film has been restored and will be re-released in several formats in February 2027.",
+   be:"For the saga's 50th anniversary, Lucasfilm has restored the first film. It will play in theaters in several formats, including IMAX 70mm film, a rare format reserved today for a handful of big releases.\n\nThe re-release is planned for February 2027; some sources give February 19. Later, in March, the film will also screen in Cosm's dome theaters.\n\nIf you're going through the saga in release order, this is a chance to see the beginning the way audiences did in 1977.",
    src:"https://deadline.com/2026/11/lucasfilm-star-wars-50th-anniversary-rerelease-imax-1237221738/",srcN:"deadline.com",rel:["ep4"],img:"news/2026-11-13-new-hope-imax.jpg"},
   {d:"2026-11-13",tag:"Дата",t:"Второй сезон «Асоки» стартует 20 января 2027 года",
    s:"Lucasfilm официально подтвердила дату премьеры на Disney+. Сериал продолжит историю после финала первого сезона в Перидее.",
    b:"Дата, которая до этого звучала только в отчётах с D23, теперь официальная: новые серии «Асоки» появятся на Disney+ 20 января 2027 года.\n\nПервый сезон закончился тем, что Асока и Сабин оказались отрезаны в далёкой галактике Перидея, а гранд-адмирал Траун вернулся в известную Галактику. Сериал остаётся частью эпохи Новой Республики и связан с «Мандалорцем» и «Повстанцами».\n\nШоураннером по-прежнему выступает Дэйв Филони.",
+   te:"Ahsoka Season 2 premieres January 20, 2027",
+   se:"Lucasfilm has officially confirmed the Disney+ premiere date. The series picks up after the Season 1 finale in Peridea.",
+   be:"The date that had only surfaced in reports from D23 is now official: new episodes of Ahsoka arrive on Disney+ on January 20, 2027.\n\nSeason 1 ended with Ahsoka and Sabine stranded in the distant galaxy of Peridea while Grand Admiral Thrawn returned to the known galaxy. The series stays in the New Republic era and connects to The Mandalorian and Rebels.\n\nDave Filoni remains showrunner.",
    src:"https://press.disney.co.uk/news/lucasfilm-and-disney-announce-a-global-year-long-celebration-of-the-50th-anniversary-of-star-wars",srcN:"press.disney.co.uk",rel:["ahsoka2","ahsoka1"],img:"posters/ahsoka2.jpg"},
   {d:"2026-11-13",tag:"Анонс",t:"Документальный фильм «The Hero Awakens» выйдет 4 мая 2027 года",
    s:"Документалку о саге снимают Lucasfilm, Cutler и This Machine вместе с Kennedy/Marshall. Премьера на Disney+ — в День «Звёздных войн».",
    b:"Фильм станет одной из центральных частей юбилейного года. Над ним работают сама Lucasfilm, студии Cutler и This Machine, а также продюсерская компания Kennedy/Marshall.\n\nПремьера на Disney+ назначена на 4 мая 2027 года — неофициальный праздник фанатов саги («May the Fourth be with you»). Подробностей о содержании и участниках пока не раскрывали.",
+   te:"Documentary “The Hero Awakens” arrives May 4, 2027",
+   se:"A documentary about the saga from Lucasfilm, Cutler and This Machine with Kennedy/Marshall. It premieres on Disney+ on Star Wars Day.",
+   be:"The film will be one of the centerpieces of the anniversary year. It's being made by Lucasfilm together with Cutler, This Machine and the production company Kennedy/Marshall.\n\nThe Disney+ premiere is set for May 4, 2027, the fans' unofficial holiday (“May the Fourth be with you”). No details about the content or participants have been shared yet.",
    src:"https://poppednews.com/2026/11/15/star-wars-50th-anniversary-2027-events-documentary-cinema/",srcN:"poppednews.com",rel:[],img:"news/2026-11-13-hero-awakens.jpg"},
   {d:"2026-11-13",tag:"Дата",t:"«Звёздный истребитель» подтверждён на 28 мая 2027 года",
    s:"Фильм Шона Леви с Райаном Гослингом остаётся в графике студии и выйдет в кинотеатрах по всему миру в конце мая.",
    b:"«Звёздный истребитель» представили на Star Wars Celebration в 2025 году. Режиссёр — Шон Леви, главную роль играет Райан Гослинг.\n\nЭто самостоятельная история, действие которой происходит примерно через пять лет после «Скайуокер. Восход». То есть это первый фильм, который откроет на экране эпоху после саги Скайуокеров.\n\nВ рамках юбилейных анонсов студия подтвердила, что мировая премьера остаётся на 28 мая 2027 года.",
+   te:"Starfighter confirmed for May 28, 2027",
+   se:"Shawn Levy's film starring Ryan Gosling stays on the studio's schedule and opens worldwide at the end of May.",
+   be:"Starfighter was unveiled at Star Wars Celebration in 2025. Shawn Levy directs, and Ryan Gosling stars.\n\nIt's a standalone story set roughly five years after The Rise of Skywalker, making it the first film to show the era after the Skywalker saga on screen.\n\nAs part of the anniversary announcements, the studio confirmed the worldwide release stays on May 28, 2027.",
    src:"https://en.wikipedia.org/wiki/Star_Wars:_Starfighter",srcN:"wikipedia.org",rel:["starfighter"],img:"posters/starfighter.jpg"},
   {d:"2026-08-17",tag:"Продление",t:"Второй сезон «Мол: Повелитель теней» выйдет в 2027 году",
    s:"Главный сценарист Мэтт Мишновец подтвердил, что продолжение истории Мола выйдет в 2027 году. Точной даты пока нет.",
    b:"Первый сезон из десяти серий вышел на Disney+ весной 2026 года, по две серии в неделю, и закончился 4 мая.\n\nВторой сезон был подтверждён ещё до премьеры первого, а летом главный сценарист Мэтт Мишновец сообщил, что ждать его стоит в 2027 году. Ни дата, ни подробности сюжета официально не раскрыты.",
+   te:"Maul: Shadow Lord Season 2 is coming in 2027",
+   se:"Head writer Matt Michnovetz confirmed Maul's story continues in 2027. No exact date yet.",
+   be:"The ten-episode first season ran on Disney+ in spring 2026, two episodes a week, ending on May 4.\n\nSeason 2 was confirmed before Season 1 even premiered, and over the summer head writer Matt Michnovetz said to expect it in 2027. Neither the date nor plot details have been officially revealed.",
    src:"https://www.gamesradar.com/au/upcoming-star-wars-movies",srcN:"gamesradar.com",rel:["maul2","maul"],img:"posters/maul.jpg"},
   {d:"2026-04-02",tag:"Продление",t:"«Мол: Повелитель теней» продлили ещё до премьеры",
    s:"Lucasfilm Animation объявила о втором сезоне за несколько дней до выхода первых серий. Дэйв Филони пообещал, что история Мола продолжится.",
    b:"Решение о продлении объявили 2 апреля 2026 года, а премьера первого сезона состоялась 6 апреля — редкий случай, когда студия заранее уверена в проекте.\n\nСериал рассказывает о Моле в первые годы Империи: он строит криминальную сеть на планете, не тронутой войной, и сталкивается с джедаем, пережившим Приказ 66. Действие происходит около 18 ДБЯ, между «Местью ситхов» и «Повстанцами».",
+   te:"Maul: Shadow Lord renewed before its premiere",
+   se:"Lucasfilm Animation announced a second season days before the first episodes aired. Dave Filoni promised Maul's story will continue.",
+   be:"The renewal was announced on April 2, 2026, and the first season premiered on April 6, a rare case of a studio betting on a show in advance.\n\nThe series follows Maul in the early years of the Empire as he builds a criminal network on a planet untouched by the war and clashes with a Jedi who survived Order 66. It's set around 18 BBY, between Revenge of the Sith and Rebels.",
    src:"https://www.starwars.com/news/star-wars-maul-shadow-lord-season-2",srcN:"starwars.com",rel:["maul2","maul"],img:"posters/maul.jpg"}
 ];

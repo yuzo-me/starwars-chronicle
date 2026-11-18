@@ -373,23 +373,26 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
     <div class="topbar">
       <div class="brand" id="brand">Голоархив · Лотал</div>
       <nav class="site-nav" aria-label="Разделы">
-        <a href="#catalog">Хронология</a>
-        <a href="#holonet">Голонет</a>
+        <a href="#catalog" data-en="Chronology">Хронология</a>
+        <a href="#holonet" data-en="Holonet">Голонет</a>
       </nav>
-      <button class="btn" id="themeBtn" type="button">◐ Сменить планету</button>
+      <div class="top-actions">
+        <button class="btn lang-btn" id="langBtn" type="button">EN</button>
+        <button class="btn" id="themeBtn" type="button" data-en="◐ Change planet">◐ Сменить планету</button>
+      </div>
     </div>
     <div class="titlerow">
-      <h1>Хроники Галактики</h1>
+      <h1 data-en="Galactic Chronicles">Хроники Галактики</h1>
       <button class="mascot" id="mascot" type="button" aria-label="Маскот планеты"><span class="bubble" id="bubble" hidden></span><span id="mascotArt"></span></button>
     </div>
-    <p class="lead">Вся экранная канва «Звёздных войн» в одном месте: фильмы, сериалы и анимация, разложенные по годам внутри Галактики, с отметками просмотра до каждой серии и тем, что ещё только выйдет.</p>
+    <p class="lead" data-en="The whole on-screen Star Wars saga in one place: films, series and animation, laid out by in-universe year, with watch tracking down to every episode and everything still to come.">Вся экранная канва «Звёздных войн» в одном месте: фильмы, сериалы и анимация, разложенные по годам внутри Галактики, с отметками просмотра до каждой серии и тем, что ещё только выйдет.</p>
     <div class="dash">
       <div class="panel progress-panel">
-        <h2>Прогресс просмотра</h2>
+        <h2 data-en="Watch progress">Прогресс просмотра</h2>
         <div class="stats">
-          <div class="stat"><b class="mono" id="sPct">0%</b><span>саги просмотрено</span></div>
-          <div class="stat"><b class="mono" id="sUnits">0</b><span>серий и фильмов</span></div>
-          <div class="stat"><b class="mono" id="sHours">0 ч</b><span>осталось смотреть</span></div>
+          <div class="stat"><b class="mono" id="sPct">0%</b><span data-en="of the saga watched">саги просмотрено</span></div>
+          <div class="stat"><b class="mono" id="sUnits">0</b><span data-en="episodes &amp; films">серий и фильмов</span></div>
+          <div class="stat"><b class="mono" id="sHours">0 ч</b><span data-en="left to watch">осталось смотреть</span></div>
         </div>
         <div class="bar"><i id="sBar" style="width:0"></i></div>
         <div class="sync"><span class="dot" id="syncDot"></span><span id="syncTxt" style="flex:1;min-width:0">Подключаюсь к архиву…</span><button class="btn" type="button" id="authBtn" hidden>Войти через Google</button></div>
@@ -397,7 +400,7 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
       <div class="panel next" id="nextBox"></div>
     </div>
     <section class="poster-strip" aria-labelledby="posterTitle">
-      <h2 id="posterTitle">Постеры по порядку выхода</h2>
+      <h2 id="posterTitle" data-en="Posters in release order">Постеры по порядку выхода</h2>
       <div class="ribbon" id="ribbon" aria-labelledby="posterTitle"></div>
     </section>
   </div>
@@ -407,18 +410,18 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
 <div class="controls">
   <div class="wrap">
     <div class="seg" role="group" aria-label="Порядок">
-      <button type="button" data-order="chrono" aria-pressed="true">Хронология</button>
-      <button type="button" data-order="release" aria-pressed="false">По выходу</button>
-      <button type="button" data-order="intro" aria-pressed="false">Для новичка</button>
+      <button type="button" data-order="chrono" aria-pressed="true" data-en="Chronology">Хронология</button>
+      <button type="button" data-order="release" aria-pressed="false" data-en="Release order">По выходу</button>
+      <button type="button" data-order="intro" aria-pressed="false" data-en="Newcomer">Для новичка</button>
     </div>
     <div class="chips" role="group" aria-label="Фильтры">
-      <button class="chip" type="button" data-f="film" aria-pressed="true">Фильмы</button>
-      <button class="chip" type="button" data-f="live" aria-pressed="true">Сериалы</button>
-      <button class="chip" type="button" data-f="anim" aria-pressed="true">Анимация</button>
-      <button class="chip" type="button" data-f="kids" aria-pressed="false">Детское</button>
-      <button class="chip" type="button" data-f="hide" aria-pressed="false">Скрыть просмотренное</button>
+      <button class="chip" type="button" data-f="film" aria-pressed="true" data-en="Films">Фильмы</button>
+      <button class="chip" type="button" data-f="live" aria-pressed="true" data-en="Series">Сериалы</button>
+      <button class="chip" type="button" data-f="anim" aria-pressed="true" data-en="Animation">Анимация</button>
+      <button class="chip" type="button" data-f="kids" aria-pressed="false" data-en="Kids">Детское</button>
+      <button class="chip" type="button" data-f="hide" aria-pressed="false" data-en="Hide watched">Скрыть просмотренное</button>
     </div>
-    <input class="search" id="q" type="search" placeholder="Найти: Асока, Мандалор, 4x19…" aria-label="Поиск">
+    <input class="search" id="q" type="search" placeholder="Найти: Асока, Мандалор, 4x19…" data-en-ph="Search: Ahsoka, Mandalore, 4x19…" aria-label="Поиск">
   </div>
 </div>
 
@@ -427,19 +430,19 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
   <main id="list" aria-label="Хронология просмотра"></main>
   <section class="holonet" id="holonet" aria-labelledby="holoT">
     <div class="holo-h">
-      <h2 id="holoT">Голонет</h2>
+      <h2 id="holoT" data-en="Holonet">Голонет</h2>
       <span class="mono holo-sub" id="holoSub"></span>
-      <button class="btn" type="button" id="newsAll">Все новости</button>
+      <button class="btn" type="button" id="newsAll" data-en="All news">Все новости</button>
     </div>
     <div class="news-row" id="newsRow"></div>
   </section>
 </div>
 </div>
-<footer class="wrap">Только экранный канон Lucasfilm (с 2014 года «Войны клонов» и фильмы вошли в него целиком). Годы указаны в системе ДБЯ / ПБЯ — до и после битвы при Явине. Порядок «Войн клонов» — официальная хронология StarWars.com. Даты будущих премьер могут сдвигаться.</footer>
+<footer class="wrap" data-en="Lucasfilm screen canon only (since 2014, The Clone Wars and all the films are fully canon). Years use the BBY / ABY system: before and after the Battle of Yavin. The Clone Wars order follows StarWars.com's official chronology. Future premiere dates may shift.">Только экранный канон Lucasfilm (с 2014 года «Войны клонов» и фильмы вошли в него целиком). Годы указаны в системе ДБЯ / ПБЯ — до и после битвы при Явине. Порядок «Войн клонов» — официальная хронология StarWars.com. Даты будущих премьер могут сдвигаться.</footer>
 
 <div class="sheet" id="sheet" hidden>
   <div class="sheet-in" role="dialog" aria-modal="true" aria-labelledby="sheetT">
-    <header><h2 id="sheetT" style="font-size:20px">Выбери планету</h2><button class="btn" type="button" id="sheetX">Закрыть</button></header>
+    <header><h2 id="sheetT" style="font-size:20px" data-en="Choose a planet">Выбери планету</h2><button class="btn" type="button" id="sheetX" data-en="Close">Закрыть</button></header>
     <div class="planets" id="planets"></div>
   </div>
 </div>
@@ -450,11 +453,13 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
 
 
 <script src="js/data.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/mascots.js"></script>
 <script src="js/trailers.js"></script>
 <script src="js/news.js"></script>
 <div class="sheet" id="newsSheet" hidden>
   <div class="sheet-in" role="dialog" aria-modal="true" aria-labelledby="newsT" style="padding:0">
-    <header style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px"><h2 id="newsT" style="font-size:20px">Голонет · все новости</h2><button class="btn" type="button" data-close-news>Закрыть</button></header>
+    <header style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px"><h2 id="newsT" style="font-size:20px" data-en="Holonet · all news">Голонет · все новости</h2><button class="btn" type="button" data-close-news data-en="Close">Закрыть</button></header>
     <div class="news-full" id="newsFull"></div>
   </div>
 </div>

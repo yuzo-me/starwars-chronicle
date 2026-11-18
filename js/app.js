@@ -1,3 +1,31 @@
+/* ============ ЯЗЫК ============ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(_){return null}}
+const EN=window.I18N;
+let lang=ls("swc-lang")||((navigator.language||"ru").toLowerCase().startsWith("ru")?"ru":"en");
+const isEN=()=>lang==="en";
+const L=(ru,en)=>isEN()?en:ru;
+function pl(n,a,b,c,e1,eN){if(isEN())return n===1?e1:eN;n=Math.abs(n)%100;const m=n%10;if(n>10&&n<20)return c;if(m>1&&m<5)return b;if(m===1)return a;return c;}
+const enE=e=>EN.entries[e.id]||{};
+function tx(e,f){
+ if(!isEN())return e[f]||"";
+ const x=enE(e);
+ if(f==="t")return x.t||e.o;
+ if(f==="d")return x.d||e.d;
+ if(f==="tip")return x.tip||"";
+ if(f==="yl")return x.yl||EN.yl(e.yl);
+ if(f==="o"){const o=e.o.replace(/ \(хронологически\)/,"").replace(/ финал$/," finale");return o===x.t?"":o;}
+ return e[f]||"";
+}
+const ut=u=>isEN()?EN.unit(u.t):u.t;
+const eraT=(er,f)=>isEN()?EN.eras[er.id][f]:er[f];
+const plT=(id,f)=>isEN()?EN.planets[id][f]:PLANETS[id][f];
+const mName=id=>isEN()?EN.mascots[id].n:MASCOT[id].n;
+const mQuips=id=>isEN()?EN.mascots[id].q:MASCOT[id].q;
+const fmtDate=r=>new Date(r).toLocaleDateString(isEN()?"en-GB":"ru-RU",{day:"numeric",month:"long",year:"numeric"});
+const hm=m=>L(`${Math.floor(m/60)} ч ${m%60} мин`,`${Math.floor(m/60)} h ${m%60} min`);
+
 /* ============ PLANETS ============ */
 const PLANETS={
  lothal:{n:"Лотал",s:"Внешнее Кольцо · сектор Лотал",
@@ -38,7 +66,7 @@ function landSVG(p){
 <path d="M0 390 C260 370 540 392 820 378 S1100 372 1200 384 V420 H0Z" fill="var(--l3)"/>`;
 }
 
-/* ============ POSTERS & MASCOTS ============ */
+/* ============ POSTERS, CREDITS, TRAILERS ============ */
 const POSTER_ALIAS={cw0:"cw1",cw7a:"cw7",cw7b:"cw7",totj1:"totj",totj4:"totj",totj5:"totj",totj6:"totj",maul2:"maul"};
 const posterOf=e=>"posters/"+(POSTER_ALIAS[e.id]||e.id)+".jpg";
 const CREDITS={
@@ -73,7 +101,11 @@ const CREDITS={
  maul:["Шоураннер","Мэтт Мишновец","Голос: Сэм Уитвер"],
  yja:["Создатель","Майкл Олсон","Детский анимационный сериал"]
 };
-const credOf=e=>CREDITS[e.id]||CREDITS[e.id.replace(/\d.*$/,"")]||null;
+function credOf(e){
+ const key=CREDITS[e.id]?e.id:e.id.replace(/\d.*$/,"");const c=CREDITS[key];if(!c)return null;
+ if(!isEN())return c;
+ const x=EN.credits[key]||[c[1],c[2]];return [EN.roles[c[0]]||c[0],x[0],x[1]];
+}
 function trailerURL(e){
  let q=e.o.split(" — ")[0].replace(/^Star Wars:?\s*/,"");
  const s=e.t.match(/Сезон (\d)/); if(s)q+=" season "+s[1];
@@ -83,69 +115,11 @@ function trailerURL(e){
 const TR=window.TRAILERS||{};
 const trailerId=e=>TR[e.id]||TR[POSTER_ALIAS[e.id]]||TR[e.id.replace(/\d.*$/,"")]||null;
 function trailerBlock(e,tid){
- return `<div class="trailer" id="trailer" data-id="${e.id}"><button class="tr-thumb" type="button" data-play="${tid}" aria-label="Смотреть трейлер «${esc(e.t)}»"><img src="https://i.ytimg.com/vi/${tid}/hqdefault.jpg" alt="" loading="lazy"><span class="tr-play">▶</span></button></div>`;
+ return `<div class="trailer" id="trailer" data-id="${e.id}"><button class="tr-thumb" type="button" data-play="${tid}" aria-label="${esc(L("Смотреть трейлер","Watch trailer"))}: ${esc(tx(e,"t"))}"><img src="https://i.ytimg.com/vi/${tid}/hqdefault.jpg" alt="" loading="lazy"><span class="tr-play">▶</span></button></div>`;
 }
-let detailId=null;
-function seqNow(){return (order==="intro"?INTRO.map(id=>BY[id]):order==="release"?[...D].sort((a,b)=>a.r.localeCompare(b.r)):D).filter(e=>!e.kids||F.kids||e.id===detailId);}
-function renderDetail(){
- const e=BY[detailId];if(!e)return;
- const p=eProg(e),soon=e.st!=="out",c=credOf(e),era=ERAS.find(x=>x.id===e.era);
- const mins=e.units.reduce((s,u)=>s+(u.m||0),0);
- const seq=seqNow(),i=seq.indexOf(e),prev=seq[i-1],next=seq[i+1];
- const st=p.n===0?"false":p.n===p.t?"true":"mixed";
- const tid=trailerId(e), oldTr=$("#trailer"), keepTr=oldTr&&oldTr.dataset.id===e.id?oldTr:null;
- $("#detailIn").innerHTML=`<div class="d-hero"><div class="bgp" style="background-image:url('${posterOf(e)}')"></div>
-  <button class="btn d-close" type="button" data-close>✕ Закрыть</button>
-  <div class="d-grid"><img src="${posterOf(e)}" alt="Постер: ${esc(e.t)}"><div style="min-width:0">
-   <div class="mono" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc)">${KIND[e.k]} · ${era.t}</div>
-   <h2 style="margin:6px 0 4px">${esc(e.t)}</h2><div class="orig">${esc(e.o)}</div>
-   <div class="meta" style="margin-top:10px">${soon?`<span class="pill soon">${e.st==="tba"?"Ожидается в 2027":"Скоро · через "+daysTo(e.r)+" дн."}</span>`:`<span class="pill">${new Date(e.r).getFullYear()}</span>`}${e.kids?'<span class="pill">Детское</span>':""}</div>
-   <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
-    ${tid?`<button class="btn primary" type="button" data-play="${tid}">▶ Смотреть трейлер</button>`:`<a class="btn primary" href="${trailerURL(e)}" target="_blank" rel="noopener noreferrer">▶ Трейлер на YouTube</a>`}
-    ${soon?"":`<button class="btn" type="button" data-all="${e.id}">${st==="true"?"Снять отметки":"✓ Отметить всё"}</button>`}
-   </div></div></div></div>
- <div class="d-body">
-  ${tid?trailerBlock(e,tid):""}
-  <p style="margin:0;font-size:15px;max-width:70ch">${esc(e.d)}</p>${e.tip?`<div class="tip" style="margin:0">${esc(e.tip)}</div>`:""}
-  <div class="facts-grid">
-   <div class="fact"><small>Время в Галактике</small><b>${esc(e.yl)}</b></div>
-   <div class="fact"><small>Премьера</small><b>${e.st==="tba"?"2027, дата не объявлена":fmtDate(e.r)}</b></div>
-   <div class="fact"><small>${e.k==="film"?"Хронометраж":"Объём"}</small><b>${e.k==="film"?(e.m?`${Math.floor(e.m/60)} ч ${e.m%60} мин`:"ещё неизвестен"):e.eps?`${e.units.length} ${plural(e.units.length,"пункт","пункта","пунктов")} · ≈${Math.round(mins/60)} ч`:"ещё неизвестен"}</b></div>
-   ${c?`<div class="fact"><small>${c[0]}</small><b>${esc(c[1])}</b></div><div class="fact" style="grid-column:span 2"><small>В ролях</small><b>${esc(c[2])}</b></div>`:""}
-   ${soon?"":`<div class="fact"><small>Твой прогресс</small><b class="mono">${p.n}/${p.t} · ${Math.round(p.n/p.t*100)}%</b></div>`}
-  </div>
-  ${e.eps?`<div class="eps">`+e.units.map(u=>{const on=watched.has(u.k);return`<button class="ep ${on?"on":""}" type="button" data-u="${u.k}" aria-pressed="${on}" ${soon?"disabled":""}><span class="chk" aria-hidden="true" aria-checked="${on}">${CHECK}</span><code>${esc(u.c)}</code><span>${esc(u.t)}</span></button>`;}).join("")+`</div>`:""}
-  <div class="d-nav">${prev?`<button class="btn" type="button" data-detail="${prev.id}">← ${esc(prev.t)}</button>`:"<span></span>"}${next?`<button class="btn" type="button" data-detail="${next.id}">${esc(next.t)} →</button>`:""}</div>
- </div>`;
- if(keepTr){const fresh=$("#trailer");if(fresh)fresh.replaceWith(keepTr);}
-}
-function playTrailer(tid){
- const box=$("#trailer");if(!box)return;
- box.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${tid}?autoplay=1&rel=0&modestbranding=1" title="Трейлер" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
- box.scrollIntoView({behavior:"smooth",block:"center"});
-}
-function openDetail(id){if(!BY[id])return;const same=detailId===id;detailId=id;renderDetail();$("#detail").hidden=false;if(!same)$("#detailIn").scrollTop=0;if(location.hash!=="#"+id)location.hash=id;}
-function closeDetail(){detailId=null;$("#detail").hidden=true;$("#detailIn").innerHTML="";if(location.hash)location.hash="";}
-window.addEventListener("hashchange",()=>{const id=location.hash.slice(1);if(BY[id]){if(detailId!==id)openDetail(id);}else if(detailId){detailId=null;$("#detail").hidden=true;$("#detailIn").innerHTML="";}});
-const MASCOT={
- lothal:{n:"Лот-кот",svg:`<svg viewBox="0 0 140 140" aria-hidden="true"><path d="M98 118C126 116 132 92 118 84C110 80 104 90 112 94" fill="none" stroke="#e6d7b4" stroke-width="9" stroke-linecap="round"/><ellipse cx="70" cy="104" rx="30" ry="26" fill="#efe3c6"/><path d="M52 92q6 8 0 16M88 92q-6 8 0 16M70 90v14" stroke="#c98a4b" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="56" cy="126" rx="10" ry="6" fill="#f7eedb"/><ellipse cx="84" cy="126" rx="10" ry="6" fill="#f7eedb"/><path d="M40 58L24 12L62 40Z" fill="#efe3c6"/><path d="M100 58L116 12L78 40Z" fill="#efe3c6"/><path d="M42 50L31 22L55 41Z" fill="#d79a62"/><path d="M98 50L109 22L85 41Z" fill="#d79a62"/><path d="M24 12l-5-9M24 12l4-10M116 12l5-9M116 12l-4-10" stroke="#c98a4b" stroke-width="2.6" stroke-linecap="round"/><path d="M36 64l-10 10 14-2M104 64l10 10-14-2" fill="#efe3c6"/><ellipse cx="70" cy="62" rx="33" ry="26" fill="#efe3c6"/><path d="M61 38q9 6 18 0M58 45q12 7 24 0" stroke="#c98a4b" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="56" cy="62" rx="8.5" ry="9.5" fill="#f2c84b"/><ellipse cx="84" cy="62" rx="8.5" ry="9.5" fill="#f2c84b"/><ellipse cx="56" cy="62" rx="2.3" ry="7.5" fill="#2a1d14"/><ellipse cx="84" cy="62" rx="2.3" ry="7.5" fill="#2a1d14"/><circle cx="58.5" cy="57.5" r="1.8" fill="#fff"/><circle cx="86.5" cy="57.5" r="1.8" fill="#fff"/><path d="M65.5 72h9l-4.5 5z" fill="#c76f5a"/><path d="M70 77q-4 5-9 3M70 77q4 5 9 3" stroke="#6b4a36" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M50 74l-19-3M50 78l-19 3M90 74l19-3M90 78l19 3" stroke="#a88e70" stroke-width="1.4" stroke-linecap="round"/></svg>`,
-  q:["Мррр. Лот-коты охраняют этот архив.","Совет: 4 сезон «Повстанцев» — всё, что нужно знать о Лотале.","Если кликнешь ещё раз, я зашиплю. Наверное.","Эзра нас кормил. Ты тоже можешь — отметь серию."]},
- tatooine:{n:"Йава",svg:`<svg viewBox="0 0 140 140" aria-hidden="true"><path d="M70 14C46 14 38 40 36 62L24 132H116L104 62C102 40 94 14 70 14Z" fill="#6e4a2c"/><path d="M52 80l-6 50M88 80l6 50M70 76v54" stroke="#5a3b22" stroke-width="2.5" fill="none"/><path d="M70 14C50 16 43 36 43 54C43 67 56 75 70 75C84 75 97 67 97 54C97 36 90 16 70 14Z" fill="#7d5533"/><ellipse cx="70" cy="56" rx="20" ry="15" fill="#140d08"/><circle cx="61" cy="56" r="8" fill="#ffd54a" opacity=".3"/><circle cx="79" cy="56" r="8" fill="#ffd54a" opacity=".3"/><circle cx="61" cy="56" r="3.8" fill="#ffe680"/><circle cx="79" cy="56" r="3.8" fill="#ffe680"/><path d="M40 86L100 120" stroke="#3b2717" stroke-width="7"/><rect x="58" y="92" width="7" height="9" rx="1" fill="#a37b4c" transform="rotate(30 61 96)"/><rect x="76" y="102" width="7" height="9" rx="1" fill="#a37b4c" transform="rotate(30 79 106)"/><path d="M44 90q-10 10-6 20" stroke="#6e4a2c" stroke-width="11" fill="none" stroke-linecap="round"/><circle cx="38" cy="112" r="5.5" fill="#3a2a1e"/><path d="M96 90q12 6 12 16" stroke="#6e4a2c" stroke-width="11" fill="none" stroke-linecap="round"/><rect x="100" y="100" width="32" height="6" rx="2" fill="#5b5f66" transform="rotate(-18 100 100)"/><circle cx="108" cy="108" r="5.5" fill="#3a2a1e"/></svg>`,
-  q:["Утини!","Продам дроида. Почти не ржавый. Почти.","Совет: начни с IV эпизода — так смотрели в 1977-м.","На Татуине два солнца и ноль сериалов. Тут лучше."]},
- coruscant:{n:"Дроид-мышка MSE-6",svg:`<svg viewBox="0 0 140 140" aria-hidden="true"><ellipse cx="70" cy="122" rx="50" ry="5" fill="#000" opacity=".3"/><path d="M50 66V48" stroke="#5b616b" stroke-width="2.5"/><circle cx="50" cy="47" r="3" fill="#3fd0ff"/><path d="M24 86L37 66H104L118 86V110H24Z" fill="#2b2f36"/><path d="M37 66H104L111 75H30Z" fill="#3d434d"/><rect x="38" y="80" width="28" height="17" rx="2" fill="#1c1f24"/><rect x="43" y="84" width="5" height="5" fill="#ff4fa3"/><rect x="52" y="84" width="5" height="5" fill="#3fd0ff"/><rect x="72" y="80" width="32" height="6" rx="1" fill="#4a515c"/><rect x="72" y="90" width="32" height="6" rx="1" fill="#4a515c"/><rect x="112" y="86" width="10" height="12" rx="2" fill="#1c1f24"/><circle cx="119" cy="92" r="3.4" fill="#3fd0ff"/><circle cx="119" cy="92" r="7" fill="#3fd0ff" opacity=".25"/><circle cx="42" cy="111" r="9" fill="#14161a"/><circle cx="70" cy="111" r="9" fill="#14161a"/><circle cx="98" cy="111" r="9" fill="#14161a"/><circle cx="42" cy="111" r="3" fill="#5b616b"/><circle cx="70" cy="111" r="3" fill="#5b616b"/><circle cx="98" cy="111" r="3" fill="#5b616b"/></svg>`,
-  q:["Би-ди-ди-ди! (Перевод: нижние уровни опасны после заката.)","Ви-и-ип! (Я видел Приказ 66. Не спрашивай.)","Бип-буп. (Советую «Андор»: там много коридоров.)","Ви-и-и-и! *уезжает в панике*"]},
- hoth:{n:"Таунтаун",svg:`<svg viewBox="0 0 140 140" aria-hidden="true"><ellipse cx="70" cy="132" rx="44" ry="4" fill="#000" opacity=".15"/><path d="M44 94Q18 106 14 126" stroke="#cfc8b8" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M80 100L86 128H98" stroke="#b3aa97" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M58 100L52 128H64" stroke="#c6bead" stroke-width="13" fill="none" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="68" cy="86" rx="29" ry="24" fill="#ddd6c6" transform="rotate(-20 68 86)"/><path d="M54 66q14-9 28 0l-4 11q-10-5-20 0z" fill="#7a4e33"/><path d="M80 72Q86 46 96 40" stroke="#ddd6c6" stroke-width="22" fill="none" stroke-linecap="round"/><ellipse cx="102" cy="40" rx="17" ry="11" fill="#ddd6c6" transform="rotate(20 102 40)"/><ellipse cx="117" cy="48" rx="9" ry="6.5" fill="#cbc2ae"/><circle cx="122" cy="47" r="1.4" fill="#5a5040"/><path d="M93 32C85 18 70 24 76 35C80 41 89 37 85 31" stroke="#8a7a62" stroke-width="5.5" fill="none" stroke-linecap="round"/><circle cx="104" cy="37" r="2.8" fill="#1e1a14"/><path d="M86 84q9 6 7 15" stroke="#cfc8b8" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M50 78l-4 3M58 90l-4 3M74 96l-3 4" stroke="#b9b09c" stroke-width="2" stroke-linecap="round"/></svg>`,
-  q:["Снаружи −60. Сиди, смотри сериал.","Ночью я замерзаю за 4 часа. «Империя наносит ответный удар» идёт 2 ч 4 мин — успеваем.","Пахну я, конечно, ужасно. Но архив у нас уютный.","Совет: после V эпизода не спойлери себе VI."]},
- mustafar:{n:"Лавовая блоха",svg:`<svg viewBox="0 0 140 140" aria-hidden="true"><ellipse cx="70" cy="128" rx="60" ry="6" fill="#ff4a1c" opacity=".45"/><path d="M54 74L30 46L18 126M60 82L44 70L36 128M86 74L110 46L122 126M80 82L96 70L104 128" stroke="#2a1a14" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="126" r="3.5" fill="#ff7a2a"/><circle cx="36" cy="128" r="3.5" fill="#ff7a2a"/><circle cx="104" cy="128" r="3.5" fill="#ff7a2a"/><circle cx="122" cy="126" r="3.5" fill="#ff7a2a"/><ellipse cx="70" cy="70" rx="31" ry="23" fill="#3a2620"/><ellipse cx="70" cy="85" rx="21" ry="6" fill="#ff5a1f" opacity=".55"/><path d="M48 66l9 6-4 8M73 54l4 11 11 2M64 84l7-7M86 60l-6 6" stroke="#ff8a3a" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="99" cy="61" rx="12" ry="9" fill="#2f1f1a"/><circle cx="105" cy="58" r="2.8" fill="#ffb238"/><circle cx="99" cy="56" r="2.2" fill="#ffb238"/><path d="M104 53q8-14 18-14M98 53q2-12 10-16" stroke="#2a1a14" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
-  q:["Тсс-с-с… Осторожно, пол — это лава.","Совет: финал III эпизода лучше не смотреть на ночь.","Вейдер построил тут замок. Соседи из нас так себе.","Шшш! *убегает по лаве*"]}
-};
-let quipI=0, quipT=null;
-function renderMascot(){const m=MASCOT[theme];$("#mascotArt").innerHTML=m.svg;$("#mascot").setAttribute("aria-label",m.n+": нажми, чтобы услышать реплику");$("#bubble").hidden=true;}
-function quip(){const m=MASCOT[theme];const b=$("#bubble");b.textContent=m.n+": "+m.q[quipI++%m.q.length];b.hidden=false;clearTimeout(quipT);quipT=setTimeout(()=>b.hidden=true,5000);}
 
 /* ============ STATE ============ */
-const $=s=>document.querySelector(s);
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const MASCOT=window.MASCOT_ART;
 const TODAY=new Date();
 D.forEach(e=>{
  if(!e.st)e.st=new Date(e.r)>TODAY?"soon":"out";
@@ -155,13 +129,77 @@ const BY=Object.fromEntries(D.map(e=>[e.id,e]));
 let watched=new Set(), theme="lothal", order="chrono";
 const F={film:true,live:true,anim:true,kids:false,hide:false};
 const open=new Set();
-function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(_){return null}}
 try{const c=JSON.parse(ls("swc-local")||"{}");if(c.w)watched=new Set(c.w);if(c.theme&&PLANETS[c.theme])theme=c.theme;}catch(_){}
+const unitName=(e,u)=>e.eps?ut(u):tx(e,"t");
+
+/* ============ DETAIL ============ */
+let detailId=null;
+const daysTo=r=>Math.ceil((new Date(r)-TODAY)/864e5);
+const inDays=n=>L(`через ${n} дн.`,`in ${n} ${n===1?"day":"days"}`);
+function seqNow(){return (order==="intro"?INTRO.map(id=>BY[id]):order==="release"?[...D].sort((a,b)=>a.r.localeCompare(b.r)):D).filter(e=>!e.kids||F.kids||e.id===detailId);}
+function renderDetail(){
+ const e=BY[detailId];if(!e)return;
+ const p=eProg(e),soon=e.st!=="out",c=credOf(e),era=ERAS.find(x=>x.id===e.era);
+ const mins=e.units.reduce((s,u)=>s+(u.m||0),0);
+ const seq=seqNow(),i=seq.indexOf(e),prev=seq[i-1],next=seq[i+1];
+ const st=p.n===0?"false":p.n===p.t?"true":"mixed";
+ const tid=trailerId(e), oldTr=$("#trailer"), keepTr=oldTr&&oldTr.dataset.id===e.id?oldTr:null;
+ const T=tx(e,"t"),O=tx(e,"o"),tip=tx(e,"tip");
+ $("#detailIn").innerHTML=`<div class="d-hero"><div class="bgp" style="background-image:url('${posterOf(e)}')"></div>
+  <button class="btn d-close" type="button" data-close>✕ ${L("Закрыть","Close")}</button>
+  <div class="d-grid"><img src="${posterOf(e)}" alt="${esc(L("Постер","Poster"))}: ${esc(T)}"><div style="min-width:0">
+   <div class="mono" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc)">${KIND()[e.k]} · ${eraT(era,"t")}</div>
+   <h2 style="margin:6px 0 4px">${esc(T)}</h2>${O?`<div class="orig">${esc(O)}</div>`:""}
+   <div class="meta" style="margin-top:10px">${soon?`<span class="pill soon">${e.st==="tba"?L("Ожидается в 2027","Expected in 2027"):L("Скоро","Soon")+" · "+inDays(daysTo(e.r))}</span>`:`<span class="pill">${new Date(e.r).getFullYear()}</span>`}${e.kids?`<span class="pill">${L("Детское","Kids")}</span>`:""}</div>
+   <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+    ${tid?`<button class="btn primary" type="button" data-play="${tid}">▶ ${L("Смотреть трейлер","Watch trailer")}</button>`:`<a class="btn primary" href="${trailerURL(e)}" target="_blank" rel="noopener noreferrer">▶ ${L("Трейлер на YouTube","Trailer on YouTube")}</a>`}
+    ${soon?"":`<button class="btn" type="button" data-all="${e.id}">${st==="true"?L("Снять отметки","Unmark all"):"✓ "+L("Отметить всё","Mark all watched")}</button>`}
+   </div></div></div></div>
+ <div class="d-body">
+  ${tid?trailerBlock(e,tid):""}
+  <p style="margin:0;font-size:15px;max-width:70ch">${esc(tx(e,"d"))}</p>${tip?`<div class="tip" style="margin:0">${esc(tip)}</div>`:""}
+  <div class="facts-grid">
+   <div class="fact"><small>${L("Время в Галактике","In-universe time")}</small><b>${esc(tx(e,"yl"))}</b></div>
+   <div class="fact"><small>${L("Премьера","Premiere")}</small><b>${e.st==="tba"?L("2027, дата не объявлена","2027, date TBA"):fmtDate(e.r)}</b></div>
+   <div class="fact"><small>${e.k==="film"?L("Хронометраж","Runtime"):L("Объём","Length")}</small><b>${e.k==="film"?(e.m?hm(e.m):L("ещё неизвестен","not announced yet")):e.eps?`${e.units.length} ${pl(e.units.length,"пункт","пункта","пунктов","item","items")} · ≈${Math.round(mins/60)} ${L("ч","h")}`:L("ещё неизвестен","not announced yet")}</b></div>
+   ${c?`<div class="fact"><small>${c[0]}</small><b>${esc(c[1])}</b></div><div class="fact" style="grid-column:span 2"><small>${L("В ролях","Cast")}</small><b>${esc(c[2])}</b></div>`:""}
+   ${soon?"":`<div class="fact"><small>${L("Твой прогресс","Your progress")}</small><b class="mono">${p.n}/${p.t} · ${Math.round(p.n/p.t*100)}%</b></div>`}
+  </div>
+  ${e.eps?`<div class="eps">`+e.units.map(u=>epBtn(e,u,soon)).join("")+`</div>`:""}
+  <div class="d-nav">${prev?`<button class="btn" type="button" data-detail="${prev.id}">← ${esc(tx(prev,"t"))}</button>`:"<span></span>"}${next?`<button class="btn" type="button" data-detail="${next.id}">${esc(tx(next,"t"))} →</button>`:""}</div>
+ </div>`;
+ if(keepTr){const fresh=$("#trailer");if(fresh)fresh.replaceWith(keepTr);}
+}
+function playTrailer(tid){
+ const box=$("#trailer");if(!box)return;
+ box.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${tid}?autoplay=1&rel=0&modestbranding=1&hl=${lang}" title="${L("Трейлер","Trailer")}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+ box.scrollIntoView({behavior:"smooth",block:"center"});
+}
+function openDetail(id){if(!BY[id])return;const same=detailId===id;detailId=id;renderDetail();$("#detail").hidden=false;if(!same)$("#detailIn").scrollTop=0;if(location.hash!=="#"+id)location.hash=id;}
+function closeDetail(){detailId=null;$("#detail").hidden=true;$("#detailIn").innerHTML="";if(location.hash)location.hash="";}
+window.addEventListener("hashchange",()=>{const id=location.hash.slice(1);if(BY[id]){if(detailId!==id)openDetail(id);}else if(detailId){detailId=null;$("#detail").hidden=true;$("#detailIn").innerHTML="";}});
+
+/* ============ MASCOT ============ */
+let quipI=0, quipT=null;
+function renderMascot(){$("#mascotArt").innerHTML=MASCOT[theme].svg;$("#mascot").setAttribute("aria-label",mName(theme)+L(": нажми, чтобы услышать реплику",": click to hear a line"));$("#bubble").hidden=true;}
+function quip(){const q=mQuips(theme);const b=$("#bubble");b.textContent=mName(theme)+": "+q[quipI++%q.length];b.hidden=false;clearTimeout(quipT);quipT=setTimeout(()=>b.hidden=true,5000);}
 
 /* ============ SYNC (Firebase через js/sync.js) ============ */
-let cloud=null, uid=null, unsub=null, writing=false, dirty=false, wTimer=null;
-function setSync(s,txt){$("#syncDot").className="dot "+(s==="ok"?"ok":s==="warn"?"warn":"");$("#syncTxt").textContent=txt;}
-function setAuthBtn(){const b=$("#authBtn");if(!cloud){b.hidden=true;return;}b.hidden=false;b.textContent=uid?"Выйти":"Войти через Google";}
+let cloud=null, uid=null, unsub=null, writing=false, dirty=false, wTimer=null, syncKey=["",""];
+const SYNC={
+ connecting:["Подключаюсь к архиву…","Connecting to the archive…"],
+ saving:["Сохраняю…","Saving…"],
+ synced:["Синхронизировано","Synced"],
+ saveFail:["Не удалось сохранить в облако, прогресс сохранён на устройстве","Couldn't save to the cloud. Progress is saved on this device"],
+ signIn:["Войди через Google, чтобы прогресс был на всех устройствах. Пока он хранится в этом браузере","Sign in with Google to keep progress on all your devices. For now it's stored in this browser"],
+ loading:["Загружаю прогресс…","Loading progress…"],
+ noSync:["Синхронизация недоступна, прогресс сохраняется в браузере","Sync is unavailable. Progress is saved in this browser"],
+ local:["Прогресс хранится в этом браузере","Progress is stored in this browser"],
+ authFail:["Вход не удался","Sign-in failed"]
+};
+function setSync(s,key,extra){syncKey=[s,key,extra||""];$("#syncDot").className="dot "+(s==="ok"?"ok":s==="warn"?"warn":"");const v=SYNC[key];$("#syncTxt").textContent=(v?(isEN()?v[1]:v[0]):key)+(extra?" · "+extra:"");}
+function setAuthBtn(){const b=$("#authBtn");if(!cloud){b.hidden=true;return;}b.hidden=false;b.textContent=uid?L("Выйти","Sign out"):L("Войти через Google","Sign in with Google");}
+const acct=()=>cloud.userName()||L("аккаунт Google","Google account");
 function persist(){
  ls("swc-local",JSON.stringify({w:[...watched],theme}));
  if(!cloud||!uid)return;
@@ -169,20 +207,20 @@ function persist(){
 }
 async function flush(){
  if(!cloud||!uid||writing||!dirty)return;
- writing=true;dirty=false;setSync("ok","Сохраняю…");
- try{await cloud.save(uid,{w:[...watched],theme});setSync("ok","Синхронизировано · "+(cloud.userName()||"аккаунт Google"));}
- catch(err){setSync("warn","Не удалось сохранить в облако, прогресс сохранён на устройстве");}
+ writing=true;dirty=false;setSync("ok","saving");
+ try{await cloud.save(uid,{w:[...watched],theme});setSync("ok","synced",acct());}
+ catch(err){setSync("warn","saveFail");}
  writing=false;if(dirty)flush();
 }
 function onCloudUser(u){
  if(unsub){unsub();unsub=null;}
  uid=u?u.uid:null;setAuthBtn();
- if(!uid){setSync("warn","Войди через Google, чтобы прогресс был на всех устройствах. Пока он хранится в этом браузере");return;}
- setSync("","Загружаю прогресс…");
+ if(!uid){setSync("warn","signIn");return;}
+ setSync("","loading");
  let first=true;
  unsub=cloud.subscribe(uid,d=>{
   if(writing||dirty)return;
-  setSync("ok","Синхронизировано · "+(cloud.userName()||"аккаунт Google"));
+  setSync("ok","synced",acct());
   if(d){
    const remote=d.w||[];
    const merged=first&&watched.size?[...new Set([...remote,...watched])]:remote; /* при первом входе объединяем с локальным */
@@ -192,27 +230,25 @@ function onCloudUser(u){
    if(first&&merged.length!==remote.length){dirty=true;flush();}
   }else if(first&&watched.size){dirty=true;flush();}
   first=false;
- },()=>setSync("warn","Синхронизация недоступна, прогресс сохраняется в браузере"));
+ },()=>setSync("warn","noSync"));
 }
 function startCloud(api){
  cloud=api;
- if(!cloud){setSync("warn","Прогресс хранится в этом браузере");setAuthBtn();return;}
+ if(!cloud){setSync("warn","local");setAuthBtn();return;}
  cloud.onAuth(onCloudUser);
 }
 if(window.SWCloud!==undefined)startCloud(window.SWCloud);
-else{setSync("","Подключаюсь к архиву…");window.addEventListener("cloud-ready",e=>startCloud(e.detail),{once:true});}
+else{setSync("","connecting");window.addEventListener("cloud-ready",e=>startCloud(e.detail),{once:true});}
 
 /* ============ RENDER ============ */
-const KIND={film:"Фильм",live:"Сериал",anim:"Анимация"};
-const fmtDate=r=>new Date(r).toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"});
-const daysTo=r=>Math.ceil((new Date(r)-TODAY)/864e5);
+const KIND=()=>isEN()?{film:"Film",live:"Series",anim:"Animation"}:{film:"Фильм",live:"Сериал",anim:"Анимация"};
 function eProg(e){const n=e.units.filter(u=>watched.has(u.k)).length;return{n,t:e.units.length};}
 function visible(e){
  if(!F[e.k])return false;
  if(e.kids&&!F.kids)return false;
  if(F.hide&&e.st==="out"){const p=eProg(e);if(p.n===p.t)return false;}
  const q=$("#q").value.trim().toLowerCase();
- if(q){const hay=(e.t+" "+e.o+" "+e.d+" "+e.units.map(u=>u.c+" "+u.t).join(" ")).toLowerCase();if(!hay.includes(q))return false;}
+ if(q){const x=enE(e);const hay=[e.t,e.o,e.d,x.t,x.d,...e.units.map(u=>u.c+" "+u.t)].join(" ").toLowerCase();if(!hay.includes(q))return false;}
  return true;
 }
 function ordered(){
@@ -221,122 +257,138 @@ function ordered(){
  return D;
 }
 const CHECK=`<svg viewBox="0 0 16 16" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>`;
+function epBtn(e,u,soon){const on=watched.has(u.k);return`<button class="ep ${on?"on":""}" type="button" data-u="${u.k}" aria-pressed="${on}" ${soon?"disabled":""}><span class="chk" aria-hidden="true" aria-checked="${on}">${CHECK}</span><code>${esc(u.c)}</code><span>${esc(ut(u))}</span></button>`;}
 function card(e){
  const p=eProg(e),soon=e.st!=="out",done=!soon&&p.n===p.t,multi=!!e.eps;
  const st=p.n===0?"false":p.n===p.t?"true":"mixed";
- const status=soon?(e.st==="tba"?`<span class="pill soon">Ожидается в 2027</span>`:`<span class="pill soon">Скоро</span> <span class="cd">${fmtDate(e.r)} · через ${daysTo(e.r)} дн.</span>`):`<span class="pill">${new Date(e.r).getFullYear()}</span>`;
- const len=e.k==="film"?(e.m?`<span class="pill">${Math.floor(e.m/60)} ч ${e.m%60} мин</span>`:""):(e.eps?`<span class="pill">${e.units.length} ${plural(e.units.length,"пункт","пункта","пунктов")}</span>`:"");
+ const T=tx(e,"t"),O=tx(e,"o"),tip=tx(e,"tip");
+ const status=soon?(e.st==="tba"?`<span class="pill soon">${L("Ожидается в 2027","Expected in 2027")}</span>`:`<span class="pill soon">${L("Скоро","Soon")}</span> <span class="cd">${fmtDate(e.r)} · ${inDays(daysTo(e.r))}</span>`):`<span class="pill">${new Date(e.r).getFullYear()}</span>`;
+ const len=e.k==="film"?(e.m?`<span class="pill">${hm(e.m)}</span>`:""):(e.eps?`<span class="pill">${e.units.length} ${pl(e.units.length,"пункт","пункта","пунктов","item","items")}</span>`:"");
  const isOpen=open.has(e.id);
  let h=`<article class="card ${done?"done":""} ${soon?"soon":""}" id="c-${e.id}" data-era="${e.era}">
  <div class="gl"><div class="glow" style="background-image:url('${posterOf(e)}')"></div></div>
- <div class="yr">${esc(e.yl)}</div>
+ <div class="yr">${esc(tx(e,"yl"))}</div>
  <div class="c-head">
-  <div class="poster"><button class="pbtn" type="button" data-detail="${e.id}" aria-label="Открыть карточку «${esc(e.t)}»"><img src="${posterOf(e)}" alt="" loading="lazy" decoding="async"></button><button class="chk" role="checkbox" aria-checked="${st}" aria-label="Отметить «${esc(e.t)}» целиком" data-all="${e.id}" ${soon?"disabled":""}>${CHECK}</button></div>
-  <div class="c-title"><button class="ttl" type="button" data-detail="${e.id}"><h3>${esc(e.t)}</h3></button><div class="orig">${esc(e.o)}</div>
-   <div class="meta"><span class="pill ${e.k}">${KIND[e.k]}</span>${e.kids?'<span class="pill">Детское</span>':""}${len}${status}${multi&&p.n?`<span class="pill mono">${p.n}/${p.t}</span>`:""}</div>
-   <p class="c-desc">${esc(e.d)}</p>${e.tip?`<div class="tip">${esc(e.tip)}</div>`:""}
+  <div class="poster"><button class="pbtn" type="button" data-detail="${e.id}" aria-label="${esc(L("Открыть карточку","Open details"))}: ${esc(T)}"><img src="${posterOf(e)}" alt="" loading="lazy" decoding="async"></button><button class="chk" role="checkbox" aria-checked="${st}" aria-label="${esc(L("Отметить целиком","Mark all watched"))}: ${esc(T)}" data-all="${e.id}" ${soon?"disabled":""}>${CHECK}</button></div>
+  <div class="c-title"><button class="ttl" type="button" data-detail="${e.id}"><h3>${esc(T)}</h3></button>${O?`<div class="orig">${esc(O)}</div>`:""}
+   <div class="meta"><span class="pill ${e.k}">${KIND()[e.k]}</span>${e.kids?`<span class="pill">${L("Детское","Kids")}</span>`:""}${len}${status}${multi&&p.n?`<span class="pill mono">${p.n}/${p.t}</span>`:""}</div>
+   <p class="c-desc">${esc(tx(e,"d"))}</p>${tip?`<div class="tip">${esc(tip)}</div>`:""}
   </div>
-  ${multi?`<button class="expand" type="button" data-open="${e.id}" aria-expanded="${isOpen}">${isOpen?"Свернуть":"Серии"}</button>`:"<span></span>"}
+  ${multi?`<button class="expand" type="button" data-open="${e.id}" aria-expanded="${isOpen}">${isOpen?L("Свернуть","Collapse"):L("Серии","Episodes")}</button>`:"<span></span>"}
  </div>`;
  if(multi&&p.n&&p.n<p.t)h+=`<div class="mini"><i style="width:${(p.n/p.t*100).toFixed(1)}%"></i></div>`;
  if(multi&&isOpen){
-  h+=`<div class="eps">`+e.units.map(u=>{const on=watched.has(u.k);return`<button class="ep ${on?"on":""}" type="button" data-u="${u.k}" aria-pressed="${on}" ${soon?"disabled":""}><span class="chk" aria-hidden="true" aria-checked="${on}">${CHECK}</span><code>${esc(u.c)}</code><span>${esc(u.t)}</span></button>`;}).join("")+
-  `<div class="eps-tools"><button class="link" type="button" data-upto="${e.id}">Заполнить пропуски до последней отмеченной</button></div></div>`;
+  h+=`<div class="eps">`+e.units.map(u=>epBtn(e,u,soon)).join("")+
+  `<div class="eps-tools"><button class="link" type="button" data-upto="${e.id}">${L("Заполнить пропуски до последней отмеченной","Fill gaps up to the last marked one")}</button></div></div>`;
  }
  return h+`</article>`;
 }
-function plural(n,a,b,c){n=Math.abs(n)%100;const m=n%10;if(n>10&&n<20)return c;if(m>1&&m<5)return b;if(m===1)return a;return c;}
 function render(){
  const list=ordered().filter(visible);
  let h="";
  if(order==="chrono"){
   for(const er of ERAS){const items=list.filter(e=>e.era===er.id);if(!items.length)continue;
-   h+=`<section id="era-${er.id}"><div class="era-h"><h2>${er.t}</h2><span>${er.y}</span><p>${er.d}</p></div><div class="rail">${items.map(card).join("")}</div></section>`;}
+   h+=`<section id="era-${er.id}"><div class="era-h"><h2>${eraT(er,"t")}</h2><span>${eraT(er,"y")}</span><p>${eraT(er,"d")}</p></div><div class="rail">${items.map(card).join("")}</div></section>`;}
  }else{
-  const intro=order==="intro"?`<div class="era-h"><h2>Путь новичка</h2><span>${INTRO.length} пунктов</span><p>Сначала оригинальная трилогия, как её увидели зрители в 1977-м. Затем приквелы, потом лучшие сериалы на пути к сиквелам. Анимацию можно добавить позже: переключись на «Хронологию».</p></div>`:
-   `<div class="era-h"><h2>В порядке выхода</h2><span>1977 → 2027</span><p>Как сагу видели зрители. Блоки «Войн клонов» внутри следуют официальной хронологии.</p></div>`;
+  const intro=order==="intro"?`<div class="era-h"><h2>${L("Путь новичка","The newcomer's path")}</h2><span>${INTRO.length} ${L("пунктов","items")}</span><p>${L("Сначала оригинальная трилогия, как её увидели зрители в 1977-м. Затем приквелы, потом лучшие сериалы на пути к сиквелам. Анимацию можно добавить позже: переключись на «Хронологию».",EN.intro)}</p></div>`:
+   `<div class="era-h"><h2>${L("В порядке выхода","In release order")}</h2><span>1977 → 2027</span><p>${L("Как сагу видели зрители. Блоки «Войн клонов» внутри следуют официальной хронологии.",EN.release)}</p></div>`;
   h=intro+`<div class="rail">${list.map(card).join("")}</div>`;
  }
- $("#list").innerHTML=h||`<div class="empty">Ничего не нашлось. Попробуй другой запрос или включи фильтры.</div>`;
+ $("#list").innerHTML=h||`<div class="empty">${L("Ничего не нашлось. Попробуй другой запрос или включи фильтры.","Nothing found. Try another search or turn the filters back on.")}</div>`;
  renderStats();renderEras();
  if(detailId)renderDetail();
 }
 function renderStats(){
  const out=D.filter(e=>e.st==="out"&&(!e.kids||F.kids));
- let tot=0,done=0,mins=0,minsTot=0;
- out.forEach(e=>e.units.forEach(u=>{tot++;minsTot+=u.m;if(watched.has(u.k))done++;else mins+=u.m;}));
+ let tot=0,done=0,mins=0;
+ out.forEach(e=>e.units.forEach(u=>{tot++;if(watched.has(u.k))done++;else mins+=u.m;}));
  const pct=tot?Math.round(done/tot*100):0;
- $("#sPct").textContent=pct+"%";$("#sUnits").textContent=`${done}/${tot}`;$("#sHours").textContent=Math.round(mins/60)+" ч";
+ $("#sPct").textContent=pct+"%";$("#sUnits").textContent=`${done}/${tot}`;$("#sHours").textContent=Math.round(mins/60)+" "+L("ч","h");
  $("#sBar").style.width=(tot?done/tot*100:0)+"%";
- /* next up */
  const seq=(order==="intro"?INTRO.map(id=>BY[id]):order==="release"?[...D].sort((a,b)=>a.r.localeCompare(b.r)):D).filter(e=>e.st==="out"&&(!e.kids||F.kids));
  let nx=null;for(const e of seq){const u=e.units.find(u=>!watched.has(u.k));if(u){nx={e,u};break;}}
  const soon=D.filter(e=>e.st==="soon").sort((a,b)=>a.r.localeCompare(b.r))[0];
- $("#nextBox").innerHTML=nx?`<div class="next-grid"><img src="${posterOf(nx.e)}" alt=""><div style="min-width:0"><div class="eyebrow">Смотреть дальше · ${order==="chrono"?"хронология":order==="release"?"по выходу":"для новичка"}</div>
-  <h3>${esc(nx.e.eps?nx.u.t:nx.e.t)}</h3><div class="sub">${nx.e.eps?esc(nx.e.t)+" · "+esc(nx.u.c)+" · ":""}${esc(nx.e.yl)}</div>
-  <div class="row"><button class="btn primary" type="button" data-u="${nx.u.k}">✓ Посмотрел</button><button class="btn" type="button" data-goto="${nx.e.id}">Показать в списке</button></div>
-  ${soon?`<div class="sub" style="margin-top:10px">Следующая премьера: <b>${esc(soon.t)}</b>, через ${daysTo(soon.r)} дн.</div>`:""}</div></div>`
-  :`<div class="eyebrow">Сага пройдена</div><h3>Ты посмотрел всё, что вышло</h3>${soon?`<div class="sub">Дальше — ${esc(soon.t)}, ${fmtDate(soon.r)}</div>`:""}`;
+ const ordName=order==="chrono"?L("хронология","chronology"):order==="release"?L("по выходу","release order"):L("для новичка","newcomer");
+ $("#nextBox").innerHTML=nx?`<div class="next-grid"><img src="${posterOf(nx.e)}" alt=""><div style="min-width:0"><div class="eyebrow">${L("Смотреть дальше","Up next")} · ${ordName}</div>
+  <h3>${esc(unitName(nx.e,nx.u))}</h3><div class="sub">${nx.e.eps?esc(tx(nx.e,"t"))+" · "+esc(nx.u.c)+" · ":""}${esc(tx(nx.e,"yl"))}</div>
+  <div class="row"><button class="btn primary" type="button" data-u="${nx.u.k}">✓ ${L("Посмотрел","Watched")}</button><button class="btn" type="button" data-goto="${nx.e.id}">${L("Показать в списке","Show in list")}</button></div>
+  ${soon?`<div class="sub" style="margin-top:10px">${L("Следующая премьера","Next premiere")}: <b>${esc(tx(soon,"t"))}</b>, ${inDays(daysTo(soon.r))}</div>`:""}</div></div>`
+  :`<div class="eyebrow">${L("Сага пройдена","Saga complete")}</div><h3>${L("Ты посмотрел всё, что вышло","You've watched everything released")}</h3>${soon?`<div class="sub">${L("Дальше","Next")} — ${esc(tx(soon,"t"))}, ${fmtDate(soon.r)}</div>`:""}`;
 }
 function renderRibbon(){
  const seen=new Set();
  $("#ribbon").innerHTML=[...D].sort((a,b)=>a.r.localeCompare(b.r)).filter(e=>{const p=posterOf(e);if(seen.has(p)||(e.kids&&!F.kids))return false;seen.add(p);return true;})
-  .map(e=>{const p=eProg(e);return`<button type="button" class="${e.st==="out"&&p.n===p.t?"w":""}" data-goto="${e.id}" title="${esc(e.t)}"><img src="${posterOf(e)}" alt="${esc(e.t)}" loading="lazy"></button>`;}).join("");
+  .map(e=>{const p=eProg(e);return`<button type="button" class="${e.st==="out"&&p.n===p.t?"w":""}" data-goto="${e.id}" title="${esc(tx(e,"t"))}"><img src="${posterOf(e)}" alt="${esc(tx(e,"t"))}" loading="lazy"></button>`;}).join("");
 }
+
 /* ============ HOLONET ============ */
 const NEWS=(window.NEWS||[]).slice().sort((a,b)=>b.d.localeCompare(a.d));
 const lastSeen=ls("swc-news-seen")||"";
+const nf=(n,f)=>isEN()?(n[f+"e"]||n[f]):n[f];
 function newsCard(n){
- const rel=(n.rel||[]).filter(id=>BY[id]).map(id=>`<button class="rel" type="button" data-detail="${id}">${esc(BY[id].t)}</button>`).join("");
+ const rel=(n.rel||[]).filter(id=>BY[id]).map(id=>`<button class="rel" type="button" data-detail="${id}">${esc(tx(BY[id],"t"))}</button>`).join("");
  const isPoster=n.img&&n.img.startsWith("posters/");
  const wide=n.img&&!isPoster?`<div class="n-img"><img src="${esc(n.img)}" alt="" loading="lazy"></div>`:"";
  const thumb=isPoster?`<img class="n-thumb" src="${esc(n.img)}" alt="" loading="lazy">`:"";
- const body=n.b?`<div class="n-body">${n.b.split(/\n\n+/).map(p=>`<p>${esc(p)}</p>`).join("")}</div><button class="link n-more" type="button" data-more aria-expanded="false">Подробнее</button>`:"";
- return `<article class="news ${isPoster?"with-thumb":""}">${wide}<div class="n-in">${thumb}<div class="n-main"><div class="top"><span class="pill">${esc(n.tag)}</span><time datetime="${n.d}">${fmtDate(n.d)}</time>${lastSeen&&n.d>lastSeen?'<span class="fresh">НОВОЕ</span>':""}</div>
-  <h3>${esc(n.t)}</h3><p class="lead-s">${esc(n.s)}</p>${body}</div></div>
-  <div class="foot"><a class="src" href="${esc(n.src)}" target="_blank" rel="noopener noreferrer">${esc(n.srcN||"Источник")} ↗</a>${rel}</div></article>`;
+ const b=nf(n,"b");
+ const body=b?`<div class="n-body">${b.split(/\n\n+/).map(p=>`<p>${esc(p)}</p>`).join("")}</div><button class="link n-more" type="button" data-more aria-expanded="false">${L("Подробнее","Read more")}</button>`:"";
+ const tag=isEN()?(EN.tags[n.tag]||n.tag):n.tag;
+ return `<article class="news ${isPoster?"with-thumb":""}">${wide}<div class="n-in">${thumb}<div class="n-main"><div class="top"><span class="pill">${esc(tag)}</span><time datetime="${n.d}">${fmtDate(n.d)}</time>${lastSeen&&n.d>lastSeen?`<span class="fresh">${L("НОВОЕ","NEW")}</span>`:""}</div>
+  <h3>${esc(nf(n,"t"))}</h3><p class="lead-s">${esc(nf(n,"s"))}</p>${body}</div></div>
+  <div class="foot"><a class="src" href="${esc(n.src)}" target="_blank" rel="noopener noreferrer">${esc(n.srcN||L("Источник","Source"))} ↗</a>${rel}</div></article>`;
 }
 function renderNews(){
  if(!NEWS.length){$("#holonet").hidden=true;return;}
  $("#newsRow").innerHTML=NEWS.slice(0,4).map(newsCard).join("");
- $("#holoSub").textContent=`${NEWS.length} ${plural(NEWS.length,"новость","новости","новостей")} · обновлено ${fmtDate(NEWS[0].d)}`;
+ $("#holoSub").textContent=`${NEWS.length} ${pl(NEWS.length,"новость","новости","новостей","story","stories")} · ${L("обновлено","updated")} ${fmtDate(NEWS[0].d)}`;
  $("#newsAll").hidden=NEWS.length<=4;
+ if(!$("#newsSheet").hidden)$("#newsFull").innerHTML=NEWS.map(newsCard).join("");
  ls("swc-news-seen",NEWS[0].d);
 }
 function renderEras(){
  renderRibbon();
  $("#eras").innerHTML=ERAS.map(er=>{const es=D.filter(e=>e.era===er.id&&e.st==="out"&&(!e.kids||F.kids));let t=0,n=0;es.forEach(e=>e.units.forEach(u=>{t++;if(watched.has(u.k))n++;}));
-  return`<button class="era-b" type="button" data-era="${er.id}"><small>${er.y}</small><strong>${er.t}</strong><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></button>`;}).join("");
+  return`<button class="era-b" type="button" data-era="${er.id}"><small>${eraT(er,"y")}</small><strong>${eraT(er,"t")}</strong><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></button>`;}).join("");
 }
 function applyTheme(){
  document.documentElement.setAttribute("data-planet",theme);
  $("#land").innerHTML=landSVG(theme);
- $("#brand").textContent="Голоархив · "+PLANETS[theme].n;
+ $("#brand").textContent=L("Голоархив","Holoarchive")+" · "+plT(theme,"n");
  renderMascot();
 }
 function renderPlanets(){
- $("#planets").innerHTML=Object.entries(PLANETS).map(([id,p])=>`<button class="pl" type="button" data-planet="${id}" aria-pressed="${id===theme}">
+ $("#planets").innerHTML=Object.keys(PLANETS).map(id=>`<button class="pl" type="button" data-planet="${id}" aria-pressed="${id===theme}">
   <div class="sw" data-planet-preview="${id}"><svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice">${landSVG(id)}</svg><span class="mini-m">${MASCOT[id].svg}</span></div>
-  <div class="tx"><b>${p.n}</b><small>${p.s}</small><p>${p.d}</p><div class="facts">${p.f}<br>Маскот: ${MASCOT[id].n}</div></div></button>`).join("");
- /* each preview uses its own planet's tokens */
+  <div class="tx"><b>${plT(id,"n")}</b><small>${plT(id,"s")}</small><p>${plT(id,"d")}</p><div class="facts">${plT(id,"f")}<br>${L("Маскот","Mascot")}: ${mName(id)}</div></div></button>`).join("");
  document.querySelectorAll("[data-planet-preview]").forEach(el=>{const id=el.dataset.planetPreview;const cs=themeVars(id);for(const k in cs)el.style.setProperty(k,cs[k]);el.style.background=`linear-gradient(180deg,${cs["--sky1"]},${cs["--sky2"]} 62%,${cs["--sky3"]})`;});
 }
 function themeVars(id){const prev=document.documentElement.getAttribute("data-planet");document.documentElement.setAttribute("data-planet",id);const cs=getComputedStyle(document.documentElement);const o={};["--sky1","--sky2","--sky3","--l1","--l2","--l3","--orb","--acc","--acc2"].forEach(k=>o[k]=cs.getPropertyValue(k).trim());document.documentElement.setAttribute("data-planet",prev);return o;}
 
-/* ============ EVENTS ============ */
+/* ============ СТАТИЧНЫЕ ТЕКСТЫ И ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА ============ */
+function applyLang(){
+ document.documentElement.lang=lang;
+ document.title=L("Хроники Галактики","Galactic Chronicles");
+ document.querySelectorAll("[data-en]").forEach(el=>{if(el.dataset.ru===undefined)el.dataset.ru=el.innerHTML;el.innerHTML=isEN()?el.dataset.en:el.dataset.ru;});
+ document.querySelectorAll("[data-en-ph]").forEach(el=>{if(el.dataset.ruPh===undefined)el.dataset.ruPh=el.placeholder;el.placeholder=isEN()?el.dataset.enPh:el.dataset.ruPh;});
+ const lb=$("#langBtn");lb.textContent=isEN()?"RU":"EN";lb.setAttribute("aria-label",isEN()?"Переключить на русский":"Switch to English");
+ setAuthBtn();setSync(syncKey[0],syncKey[1]||"connecting",syncKey[2]);
+ applyTheme();render();renderNews();
+ if(!$("#sheet").hidden)renderPlanets();
+}
+
 /* ============ ОТКЛИК НА ДЕЙСТВИЯ ============ */
 let toastT=null, undoSet=null;
 function toast(html,prev){
  let el=$("#toast");
  if(!el){el=document.createElement("div");el.id="toast";el.className="toast";el.setAttribute("role","status");document.body.appendChild(el);}
  undoSet=prev;
- el.innerHTML=`<span>${html}</span>${prev?'<button class="btn" type="button" id="undoBtn">Отменить</button>':""}`;
+ el.innerHTML=`<span>${html}</span>${prev?`<button class="btn" type="button" id="undoBtn">${L("Отменить","Undo")}</button>`:""}`;
  setTimeout(()=>el.classList.add("show"),20);
  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("show"),4200);
 }
 function say(text){
  const b=$("#bubble"),m=$("#mascot");if(!b||!m)return;
- b.textContent=MASCOT[theme].n+": "+text;b.hidden=false;
+ b.textContent=mName(theme)+": "+text;b.hidden=false;
  m.classList.remove("hop");void m.offsetWidth;m.classList.add("hop");
  clearTimeout(quipT);quipT=setTimeout(()=>b.hidden=true,4500);
 }
@@ -347,23 +399,26 @@ function afterChange(keys,added,prev){
   keys.forEach(k=>document.querySelectorAll(`[data-u="${k}"] .chk, [data-u="${k}"].chk`).forEach(c=>{c.classList.remove("pop");void c.offsetWidth;c.classList.add("pop");}));
   document.querySelectorAll(`[data-all="${e.id}"]`).forEach(c=>{c.classList.remove("pop");void c.offsetWidth;c.classList.add("pop");});
  });
- const full=e.units.every(u=>watched.has(u.k));
- if(added&&full){
+ const T=tx(e,"t");
+ if(added&&e.units.every(u=>watched.has(u.k))){
   requestAnimationFrame(()=>{const c=document.getElementById("c-"+e.id);if(c){c.classList.remove("flash");void c.offsetWidth;c.classList.add("flash");}});
-  say(`«${e.t}» пройдено! До конца саги ≈${leftHours()} ч.`);
+  say(L(`«${T}» пройдено! До конца саги ≈${leftHours()} ч.`,`“${T}” complete! About ${leftHours()} h of the saga left.`));
  }
  const u=keys.length===1?e.units.find(x=>x.k===keys[0]):null;
- const name=u&&e.eps?`${esc(u.t)} <span style="opacity:.7">· ${esc(e.t)}</span>`:esc(e.t);
- toast(`${added?"<b>✓ Просмотрено:</b>":"<b>Снята отметка:</b>"} ${name}`,prev);
+ const name=u&&e.eps?`${esc(ut(u))} <span style="opacity:.7">· ${esc(T)}</span>`:esc(T);
+ toast(`<b>${added?"✓ "+L("Просмотрено","Watched"):L("Снята отметка","Unmarked")}:</b> ${name}`,prev);
 }
 function toggle(k){const prev=new Set(watched);const add=!watched.has(k);add?watched.add(k):watched.delete(k);persist();render();afterChange([k],add,prev);}
+
+/* ============ EVENTS ============ */
 document.addEventListener("click",ev=>{
  const t=ev.target.closest("button");if(!t||t.disabled)return;
  if(t.dataset.u){toggle(t.dataset.u);return;}
  if(t.dataset.all){const e=BY[t.dataset.all];const prev=new Set(watched);const all=e.units.every(u=>watched.has(u.k));e.units.forEach(u=>all?watched.delete(u.k):watched.add(u.k));persist();render();afterChange(e.units.map(u=>u.k),!all,prev);return;}
  if(t.id==="undoBtn"&&undoSet){watched=new Set(undoSet);undoSet=null;persist();render();$("#toast").classList.remove("show");return;}
+ if(t.id==="langBtn"){lang=isEN()?"ru":"en";ls("swc-lang",lang);applyLang();return;}
  if(t.dataset.open){const id=t.dataset.open;open.has(id)?open.delete(id):open.add(id);render();return;}
- if(t.dataset.upto){const e=BY[t.dataset.upto];/* отмечает всё до последней отмеченной серии */let last=-1;e.units.forEach((u,i)=>{if(watched.has(u.k))last=i;});e.units.slice(0,last+1).forEach(u=>watched.add(u.k));persist();render();return;}
+ if(t.dataset.upto){const e=BY[t.dataset.upto];let last=-1;e.units.forEach((u,i)=>{if(watched.has(u.k))last=i;});e.units.slice(0,last+1).forEach(u=>watched.add(u.k));persist();render();return;}
  if(t.dataset.order){order=t.dataset.order;document.querySelectorAll("[data-order]").forEach(b=>b.setAttribute("aria-pressed",b===t));render();return;}
  if(t.dataset.f){F[t.dataset.f]=!F[t.dataset.f];t.setAttribute("aria-pressed",F[t.dataset.f]);render();return;}
  if(t.dataset.era){if(order!=="chrono"){order="chrono";document.querySelectorAll("[data-order]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.order==="chrono"));render();}const el=document.getElementById("era-"+t.dataset.era);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});return;}
@@ -371,21 +426,20 @@ document.addEventListener("click",ev=>{
  if(t.dataset.planet){theme=t.dataset.planet;applyTheme();renderPlanets();persist();return;}
  if(t.dataset.play){playTrailer(t.dataset.play);return;}
  if(t.dataset.detail){$("#newsSheet").hidden=true;openDetail(t.dataset.detail);return;}
- if(t.hasAttribute("data-more")){const a=t.closest(".news");const o=a.classList.toggle("open");t.textContent=o?"Свернуть":"Подробнее";t.setAttribute("aria-expanded",o);return;}
+ if(t.hasAttribute("data-more")){const a=t.closest(".news");const o=a.classList.toggle("open");t.textContent=o?L("Свернуть","Collapse"):L("Подробнее","Read more");t.setAttribute("aria-expanded",o);return;}
  if(t.id==="newsAll"){$("#newsFull").innerHTML=NEWS.map(newsCard).join("");$("#newsSheet").hidden=false;return;}
  if(t.hasAttribute("data-close-news")){$("#newsSheet").hidden=true;return;}
  if(t.hasAttribute("data-close")){closeDetail();return;}
  if(t.id==="mascot"){quip();return;}
- if(t.id==="authBtn"&&cloud){(uid?cloud.signOut():cloud.signIn()).catch(err=>setSync("warn","Вход не удался: "+(err&&err.code||"ошибка")));return;}
+ if(t.id==="authBtn"&&cloud){(uid?cloud.signOut():cloud.signIn()).catch(err=>setSync("warn","authFail",err&&err.code||""));return;}
  if(t.id==="themeBtn"){renderPlanets();$("#sheet").hidden=false;$("#sheetX").focus();return;}
  if(t.id==="sheetX"){$("#sheet").hidden=true;return;}
 });
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")$("#sheet").hidden=true;});
 $("#detail").addEventListener("click",e=>{if(e.target.id==="detail")closeDetail();});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#sheet").hidden=true;if(detailId)closeDetail();}});
+$("#newsSheet").addEventListener("click",e=>{if(e.target.id==="newsSheet")$("#newsSheet").hidden=true;});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#sheet").hidden=true;$("#newsSheet").hidden=true;if(detailId)closeDetail();}});
 $("#q").addEventListener("input",render);
 
-$("#newsSheet").addEventListener("click",e=>{if(e.target.id==="newsSheet")$("#newsSheet").hidden=true;});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#newsSheet").hidden=true;});
-applyTheme();render();renderNews();
+applyLang();
 {const h=location.hash.slice(1);if(BY[h])openDetail(h);}
