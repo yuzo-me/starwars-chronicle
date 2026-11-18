@@ -1,30 +1,13 @@
+/* Улучшения структуры и удобства (по мотивам редизайна Codex).
+   Палитры планет, шапка с пейзажем и космический фон остаются из index.html. */
 :root {
-  --bg: #100e18;
-  --surf: #191624;
-  --surf2: #241e33;
-  --line: #383047;
-  --fg: #f8f2e6;
-  --mut: #bdb4ca;
-  --acc: #efd185;
-  --acc2: #a9d0a1;
-  --onacc: #241a10;
-  --soon: #f6ae84;
-  --sky1: #17142b;
-  --sky2: #51385b;
-  --sky3: #d89174;
-  --l1: #584063;
-  --l2: #342b4d;
-  --l3: #1e2635;
-  --orb: #ffe6ac;
-  --stars: .32;
-  --r: 16px;
   --gutter: clamp(16px, 4vw, 48px);
   --control-clearance: 88px;
   --surface-shadow: 0 12px 35px color-mix(in srgb, #080711 16%, transparent);
   scrollbar-color: var(--line) transparent;
 }
 
-/* Keep text and active controls legible on the light planet themes. */
+/* Контраст акцентов на светлых планетах */
 :root[data-planet="tatooine"] {
   --acc: #973b13;
   --acc2: #65501d;
@@ -53,143 +36,51 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
-.sd, .sd2 { opacity: .12; }
-.ship { opacity: .45; }
-
-/* Opening screen */
-.hero {
-  overflow: clip;
-  background:
-    radial-gradient(ellipse at 78% 0%, color-mix(in srgb, var(--sky2) 34%, transparent), transparent 62%),
-    var(--bg);
-}
-
-.hero-in { gap: 0; padding-block: 0 20px; }
-
+/* Верхняя панель с навигацией */
 .topbar {
-  min-height: 72px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   gap: 12px 24px;
-  border-bottom: 1px solid var(--line);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: .75rem;
-  letter-spacing: .075em;
-  color: var(--fg);
-  opacity: 1;
 }
 
 .brand::before {
   content: "";
-  width: 16px;
+  width: 14px;
   aspect-ratio: 1;
   flex: none;
   border: 1px solid var(--acc);
   border-radius: 50%;
   background: radial-gradient(circle, var(--acc) 20%, transparent 25%);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--acc) 20%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--acc) 30%, transparent);
 }
 
 .site-nav { display: flex; gap: clamp(14px, 3vw, 38px); }
-.site-nav a { font-weight: 700; font-size: .875rem; color: var(--mut); text-decoration: none; }
-.site-nav a:hover { color: var(--acc); }
+.site-nav a { font-weight: 700; font-size: .875rem; color: var(--fg); opacity: .85; text-decoration: none; }
+.site-nav a:hover { color: var(--acc); opacity: 1; }
 #themeBtn { justify-self: end; }
 
+/* Кнопки крупнее */
 .btn {
   justify-content: center;
   min-height: 40px;
   padding: 7px 13px;
-  border-radius: 9px;
-  background: var(--surf2);
   font-size: .875rem;
   line-height: 1.3;
   text-decoration: none;
-  backdrop-filter: none;
 }
 
 .btn.primary:hover { background: color-mix(in srgb, var(--acc) 85%, var(--fg)); }
 
-.hero-stage {
-  display: grid;
-  grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr);
-  gap: clamp(24px, 5vw, 72px);
-  align-items: center;
-  padding-block: clamp(24px, 3.15vw, 42px);
-}
-
-.hero h1 {
-  max-width: none;
-  font-size: clamp(2.5rem, 5.2vw, 4.75rem);
-  line-height: 1.04;
-  letter-spacing: -.055em;
-  text-shadow: none;
-  text-wrap: wrap;
-}
-
-.hero h1 span { display: block; color: var(--acc); }
-.hero p.lead { max-width: 52ch; margin-top: 16px; opacity: 1; color: var(--mut); }
-
-.hero-visual {
-  position: relative;
-  isolation: isolate;
-  min-width: 0;
-  height: clamp(205px, 20vw, 275px);
-  border: 1px solid color-mix(in srgb, var(--acc) 38%, var(--line));
-  border-radius: 20px;
-  background:
-    radial-gradient(circle at 17% 26%, var(--orb) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 54% 14%, var(--orb) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 45% 44%, var(--orb) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 92% 25%, var(--orb) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 28% 48%, var(--orb) 0 .75px, transparent 1.25px),
-    linear-gradient(160deg, var(--sky1) 10%, var(--sky2) 62%, var(--sky3));
-  box-shadow: var(--surface-shadow);
-}
-
-.hero-visual::before,
-.hero-visual::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-}
-
-.hero-visual::before {
-  inset: 10px;
-  z-index: 1;
-  border: 1px solid color-mix(in srgb, var(--orb) 33%, transparent);
-  border-radius: 12px;
-}
-
-.hero-visual::after {
-  left: 6%;
-  top: 18%;
-  width: 56%;
-  height: 25%;
-  border: 1px solid color-mix(in srgb, var(--orb) 34%, transparent);
-  border-radius: 50%;
-  transform: rotate(-22deg);
-}
-
-.hero svg.land { border-radius: inherit; }
-
-.mascot {
-  position: absolute;
-  right: 8%;
-  bottom: 7%;
-  z-index: 2;
-  width: clamp(94px, 12vw, 158px);
-}
-
-.mascot:hover svg { filter: drop-shadow(0 4px 16px color-mix(in srgb, var(--orb) 45%, transparent)); }
-.bubble { right: 15%; bottom: 92%; z-index: 1; font-size: .875rem; }
-
-.dash { grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr); gap: 14px; margin: 0; }
-.panel { padding: clamp(14px, 2vw, 22px); background: var(--surf); box-shadow: var(--surface-shadow); }
+/* Панели прогресса и «Смотреть дальше» */
+.dash { gap: 14px; }
+.panel { padding: clamp(14px, 2vw, 22px); box-shadow: var(--surface-shadow); }
 
 .progress-panel h2,
 .poster-strip h2 {
@@ -200,88 +91,72 @@ input:focus-visible {
 
 .progress-panel h2 { margin-bottom: 12px; }
 .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px 12px; }
-.stat b { color: var(--acc); font: 600 clamp(1.125rem, 2.3vw, 1.65rem)/1.25 var(--f-mono); }
+.stat b { color: var(--acc); }
 .stat span { display: block; margin-top: 3px; font-size: .875rem; line-height: 1.25; }
 .sync { flex-wrap: wrap; font-size: .8125rem; }
 .sync .btn { min-height: 34px; }
-.next { background: linear-gradient(115deg, var(--surf), color-mix(in srgb, var(--surf2) 68%, var(--surf))); }
 .next-grid { gap: clamp(12px, 2vw, 20px); }
 .next-grid img { width: clamp(62px, 7vw, 90px); }
 .next .eyebrow { font-size: .75rem; letter-spacing: .065em; }
 .next h3 { font-size: clamp(1rem, 1.9vw, 1.35rem); }
 .next .sub { font-size: .875rem; }
 
-.poster-strip { margin-top: 20px; min-width: 0; }
-.poster-strip h2 { margin-bottom: 8px; color: var(--mut); }
+.poster-strip { margin-top: 6px; min-width: 0; }
+.poster-strip h2 { margin-bottom: 8px; color: var(--fg); opacity: .8; }
 .ribbon { gap: 9px; padding: 5px 4px 10px; margin-inline: -4px; }
-.ribbon button { width: clamp(54px, 6vw, 72px); opacity: 1; border: 1px solid var(--line); }
+.ribbon button { width: clamp(54px, 6vw, 72px); border: 1px solid var(--line); }
 .ribbon button:hover { border-color: var(--acc); }
 
-/* Catalog navigation */
-.controls { border-top: 1px solid var(--line); }
+/* Панель фильтров */
 .controls .wrap { gap: 8px 14px; padding-block: 9px; }
 .seg { border-radius: 10px; }
 .seg button { border-radius: 7px; min-height: 34px; padding-inline: 11px; font-size: .875rem; white-space: nowrap; }
 .seg button:hover:not([aria-pressed="true"]) { color: var(--fg); background: var(--surf2); }
 .chips { gap: 5px; }
-.chip { min-height: 34px; padding-inline: 9px; border-radius: 8px; font-size: .875rem; }
+.chip { min-height: 34px; padding-inline: 10px; font-size: .875rem; }
 .chip[aria-pressed="true"] { border-color: color-mix(in srgb, var(--acc) 55%, var(--line)); }
 .chip:hover { border-color: var(--acc); }
 
-.search {
-  flex: 1 1 210px;
-  min-height: 42px;
-  border-radius: 9px;
-  background: var(--surf2);
-  font-size: 1rem;
-}
-
+.search { flex: 1 1 210px; min-height: 42px; font-size: 1rem; }
 .search::placeholder { color: var(--mut); opacity: 1; }
 .eras { gap: 8px; padding: 15px 4px 9px; margin-inline: -4px; }
-.era-b { flex-basis: 142px; border-radius: 10px; }
+.era-b { flex-basis: 142px; }
 .era-b small { font-size: .75rem; }
 .era-b strong { font-size: .875rem; }
 .era-b .bar { margin-top: 7px; }
 
-/* Timeline and news */
+/* Хронология + колонка Голонета */
 #list, #holonet, #list > section { min-width: 0; scroll-margin-top: var(--control-clearance); }
 
 .archive-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(254px, .34fr);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, .36fr);
   gap: 28px;
   align-items: start;
   padding-block: 24px 54px;
+  position: relative;
+  z-index: 1;
 }
 
 #list { padding-block: 0; }
 .era-h { gap: 6px 12px; margin: 32px 0 15px; padding-bottom: 11px; }
-#list > .era-h:first-child, #list > section:first-child > .era-h { margin-top: 0; }
-.era-h h2, .holo-h h2 { font-size: clamp(1.15rem, 2.2vw, 1.55rem); letter-spacing: -.035em; }
+#list > section:first-child > .era-h, #list > .era-h:first-child { margin-top: 0; }
+.era-h h2, .holo-h h2 { font-size: clamp(1.15rem, 2.2vw, 1.55rem); letter-spacing: -.02em; }
 .era-h p { font-size: .9375rem; }
 .rail { gap: 12px; }
 .card { box-shadow: var(--surface-shadow); }
-.card.done { opacity: 1; }
-.card.done .yr { color: var(--acc); }
 .card:focus-within { border-color: var(--acc); }
-.card .glow { opacity: .08; }
 .yr { font-size: .75rem; overflow-wrap: anywhere; }
 
-.c-head {
-  grid-template-columns: 82px minmax(0, 1fr) auto;
-  gap: 14px;
-  padding: 14px;
-}
-
+.c-head { grid-template-columns: 82px minmax(0, 1fr) auto; padding: 14px; }
 .poster { width: 82px; }
 .poster .chk { width: 32px; height: 32px; }
 .pbtn:focus-visible { outline-offset: -3px; }
-.c-title h3 { font-size: clamp(1rem, 1.7vw, 1.2rem); letter-spacing: -.025em; }
+.c-title h3 { font-size: clamp(1rem, 1.7vw, 1.2rem); }
 .c-title .orig { font-size: .875rem; }
 .c-desc { font-size: .9375rem; }
 .tip { font-size: .875rem; }
-.pill { font-size: .75rem; background: color-mix(in srgb, var(--surf2) 84%, var(--surf)); }
-.pill.soon { background: var(--soon); }
+.pill { font-size: .75rem; }
 .expand { min-height: 36px; font-size: .875rem; }
 .eps { grid-template-columns: repeat(auto-fit, minmax(min(100%, 235px), 1fr)); }
 .eps-tools { flex-wrap: wrap; }
@@ -294,23 +169,17 @@ input:focus-visible {
 .holo-h #newsAll { grid-area: 1 / 2 / 3 / 3; align-self: center; }
 .holo-sub { font-size: .75rem; }
 .news-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
-.news { background: var(--surf); gap: 9px; }
-.news::before { height: 1px; opacity: .65; }
+.news { gap: 9px; }
 .news h3 { font-family: var(--f-body); font-size: 1rem; font-weight: 800; text-wrap: pretty; }
 .news p { font-size: .875rem; }
 .news time, .news .fresh { font-size: .75rem; }
 .news a.src, .rel { font-size: .8125rem; }
 .rel { min-height: 29px; }
 
-/* Overlays */
-.sheet { padding: 12px; }
-.sheet-in { max-height: min(90vh, calc(100dvh - 24px)); box-shadow: 0 18px 60px #0006; }
+/* Окна */
+.sheet-in { max-height: min(90vh, calc(100dvh - 24px)); }
 .planets { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
 .pl p { font-size: .875rem; }
-.d-grid { grid-template-columns: minmax(90px, 170px) minmax(0, 1fr); }
-.d-close { top: 12px; }
-.d-hero .bgp { opacity: .22; }
-.d-grid .orig { color: var(--mut); }
 .fact small { font-size: .75rem; }
 .fact b { overflow-wrap: anywhere; }
 .d-nav .btn { max-width: 100%; text-align: left; }
@@ -331,34 +200,21 @@ footer { font-size: .875rem; }
 }
 
 @media (max-width: 760px) {
-  .topbar { grid-template-columns: 1fr auto; gap: 6px 10px; padding-block: 10px; }
+  .topbar { grid-template-columns: 1fr auto; gap: 6px 10px; }
   .site-nav { grid-row: 2; grid-column: 1 / -1; }
   .site-nav a { padding-block: 5px; }
-  .hero-stage { gap: 16px; }
-  .dash { grid-template-columns: minmax(0, 1fr); }
   .controls .search { flex-basis: 100%; }
-  .d-grid { grid-template-columns: minmax(70px, 105px) minmax(0, 1fr); gap: 13px; }
-  .d-hero { padding: 60px 14px 14px; }
-  .d-body { padding-inline: 14px; }
 }
 
 @media (max-width: 600px) {
   :root { --control-clearance: 16px; }
-  .hero-stage { grid-template-columns: minmax(0, 1fr); padding-block: 22px 14px; }
-  .hero h1 { font-size: clamp(2rem, 8.7vw, 3.125rem); }
-  .hero p.lead { margin-top: 12px; }
-  .hero-visual { height: clamp(132px, 30vw, 180px); }
-  .mascot { width: 88px; }
   .controls { position: relative; top: auto; }
   .controls .wrap { gap: 6px; padding-block: 7px; }
   .seg { width: 100%; }
   .seg button { flex: 1; padding-inline: 5px; }
-  .chip { padding-inline: 7px; }
+  .chip { padding-inline: 8px; }
   .archive-layout { padding-top: 17px; }
   .news-row { grid-template-columns: minmax(0, 1fr); }
-  .rail { padding-left: 0; }
-  .rail::before, .card::before { display: none; }
-  .yr { position: static; width: auto; text-align: left; padding: 10px 12px 0; }
   .c-head { grid-template-columns: 62px minmax(0, 1fr); gap: 10px 12px; padding: 8px 12px 12px; }
   .poster { width: 62px; }
   .c-head .expand { grid-column: 2; justify-self: start; }
