@@ -20,9 +20,13 @@
 .sc-hop { animation: sc-hop .45s ease-in-out infinite alternate; }
 @keyframes sc-hop { from { transform: translateY(0); } to { transform: translateY(-9px); } }
 
+/* Пиксельные кадры: два кадра сменяют друг друга */
+.sc-fa { animation: sc-fa calc(var(--fs, .3s) * 2) steps(1) infinite; }
+.sc-fb { animation: sc-fb calc(var(--fs, .3s) * 2) steps(1) infinite; }
+@keyframes sc-fa { 0% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes sc-fb { 0% { opacity: 0; } 50% { opacity: 1; } }
+
 /* Татуин: йавы крадут дроида (цикл 16 с) */
-.sc-bob { animation: sc-bob .32s ease-in-out infinite alternate; }
-@keyframes sc-bob { from { transform: translateY(0); } to { transform: translateY(-2px); } }
 .sc-jw1 { animation: sc-jw1 16s linear infinite; }
 @keyframes sc-jw1 {
   0%   { transform: translate(190px, 12px); opacity: 1; }
@@ -82,5 +86,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   [class*="sc-"] { animation: none !important; }
-  .sc-zap { opacity: 0; }
+  .sc-zap, .sc-fb { opacity: 0; }
 }
