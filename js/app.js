@@ -283,6 +283,22 @@ function renderRibbon(){
  $("#ribbon").innerHTML=[...D].sort((a,b)=>a.r.localeCompare(b.r)).filter(e=>{const p=posterOf(e);if(seen.has(p)||(e.kids&&!F.kids))return false;seen.add(p);return true;})
   .map(e=>{const p=eProg(e);return`<button type="button" class="${e.st==="out"&&p.n===p.t?"w":""}" data-goto="${e.id}" title="${esc(e.t)}"><img src="${posterOf(e)}" alt="${esc(e.t)}" loading="lazy"></button>`;}).join("");
 }
+/* ============ HOLONET ============ */
+const NEWS=(window.NEWS||[]).slice().sort((a,b)=>b.d.localeCompare(a.d));
+const lastSeen=ls("swc-news-seen")||"";
+function newsCard(n){
+ const rel=(n.rel||[]).filter(id=>BY[id]).map(id=>`<button class="rel" type="button" data-detail="${id}">${esc(BY[id].t)}</button>`).join("");
+ return `<article class="news"><div class="top"><span class="pill">${esc(n.tag)}</span><time datetime="${n.d}">${fmtDate(n.d)}</time>${lastSeen&&n.d>lastSeen?'<span class="fresh">НОВОЕ</span>':""}</div>
+  <h3>${esc(n.t)}</h3><p>${esc(n.s)}</p>
+  <div class="foot"><a class="src" href="${esc(n.src)}" target="_blank" rel="noopener noreferrer">${esc(n.srcN||"Источник")} ↗</a>${rel}</div></article>`;
+}
+function renderNews(){
+ if(!NEWS.length){$("#holonet").hidden=true;return;}
+ $("#newsRow").innerHTML=NEWS.slice(0,4).map(newsCard).join("");
+ $("#holoSub").textContent=`${NEWS.length} ${plural(NEWS.length,"новость","новости","новостей")} · обновлено ${fmtDate(NEWS[0].d)}`;
+ $("#newsAll").hidden=NEWS.length<=4;
+ ls("swc-news-seen",NEWS[0].d);
+}
 function renderEras(){
  renderRibbon();
  $("#eras").innerHTML=ERAS.map(er=>{const es=D.filter(e=>e.era===er.id&&e.st==="out"&&(!e.kids||F.kids));let t=0,n=0;es.forEach(e=>e.units.forEach(u=>{t++;if(watched.has(u.k))n++;}));
@@ -317,7 +333,9 @@ document.addEventListener("click",ev=>{
  if(t.dataset.goto){const id=t.dataset.goto;if(BY[id].eps)open.add(id);render();const el=document.getElementById("c-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"center"});return;}
  if(t.dataset.planet){theme=t.dataset.planet;applyTheme();renderPlanets();persist();return;}
  if(t.dataset.play){playTrailer(t.dataset.play);return;}
- if(t.dataset.detail){openDetail(t.dataset.detail);return;}
+ if(t.dataset.detail){$("#newsSheet").hidden=true;openDetail(t.dataset.detail);return;}
+ if(t.id==="newsAll"){$("#newsFull").innerHTML=NEWS.map(newsCard).join("");$("#newsSheet").hidden=false;return;}
+ if(t.hasAttribute("data-close-news")){$("#newsSheet").hidden=true;return;}
  if(t.hasAttribute("data-close")){closeDetail();return;}
  if(t.id==="mascot"){quip();return;}
  if(t.id==="authBtn"&&cloud){(uid?cloud.signOut():cloud.signIn()).catch(err=>setSync("warn","Вход не удался: "+(err&&err.code||"ошибка")));return;}
@@ -329,5 +347,7 @@ $("#detail").addEventListener("click",e=>{if(e.target.id==="detail")closeDetail(
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#sheet").hidden=true;if(detailId)closeDetail();}});
 $("#q").addEventListener("input",render);
 
-applyTheme();render();
+$("#newsSheet").addEventListener("click",e=>{if(e.target.id==="newsSheet")$("#newsSheet").hidden=true;});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#newsSheet").hidden=true;});
+applyTheme();render();renderNews();
 {const h=location.hash.slice(1);if(BY[h])openDetail(h);}

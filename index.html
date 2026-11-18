@@ -152,6 +152,29 @@ main{padding-block:10px 60px}
 .cd{font-family:var(--f-mono);font-size:12px;color:var(--soon);font-weight:600}
 .empty{padding:40px 0;text-align:center;color:var(--mut)}
 
+/* holonet news */
+.holonet{position:relative;z-index:1;padding-block:22px 18px}
+.holo-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.holo-h h2{font-size:20px;display:flex;align-items:center;gap:10px}
+.holo-sub{font-size:11.5px;color:var(--mut);flex:1}
+.holo-dot{width:10px;height:10px;border-radius:50%;background:var(--acc2);box-shadow:0 0 0 0 var(--acc2);animation:ping 2.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc2) 60%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+.news-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.news{position:relative;background:color-mix(in srgb,var(--surf) 92%,transparent);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0;overflow:hidden}
+.news::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,var(--acc),transparent)}
+.news .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.news time{font-family:var(--f-mono);font-size:11px;color:var(--mut)}
+.news .fresh{font-size:10.5px;font-weight:800;color:var(--onacc);background:var(--acc2);border-radius:999px;padding:1px 7px;letter-spacing:.04em}
+.news h3{font-size:14.5px;line-height:1.3}
+.news p{margin:0;font-size:13px;color:var(--mut);line-height:1.5}
+.news .foot{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.news a.src{font-size:12px;color:var(--acc);font-weight:700;text-decoration:none;margin-right:auto}
+.news a.src:hover{text-decoration:underline}
+.rel{border:1px solid var(--line);background:var(--surf2);border-radius:999px;font-size:11px;font-weight:600;padding:2px 8px;color:var(--fg)}
+.rel:hover{border-color:var(--acc)}
+.news-full{display:grid;gap:12px;padding:0 20px 20px}
+.news-full .news p{display:block}
+
 /* theme sheet */
 .sheet{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,#000 55%,transparent);display:grid;place-items:center;padding:16px}
 .sheet-in{background:var(--bg);border:1px solid var(--line);border-radius:18px;max-width:880px;width:100%;max-height:88vh;overflow:auto;padding:20px}
@@ -260,6 +283,15 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
   </div>
 </div>
 
+<section class="wrap holonet" id="holonet" aria-labelledby="holoT">
+  <div class="holo-h">
+    <h2 id="holoT"><span class="holo-dot" aria-hidden="true"></span>Голонет</h2>
+    <span class="mono holo-sub" id="holoSub"></span>
+    <button class="btn" type="button" id="newsAll">Все новости</button>
+  </div>
+  <div class="news-row" id="newsRow"></div>
+</section>
+
 <div class="controls">
   <div class="wrap">
     <div class="seg" role="group" aria-label="Порядок">
@@ -296,6 +328,13 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
 
 <script src="js/data.js"></script>
 <script src="js/trailers.js"></script>
+<script src="js/news.js"></script>
+<div class="sheet" id="newsSheet" hidden>
+  <div class="sheet-in" role="dialog" aria-modal="true" aria-labelledby="newsT" style="padding:0">
+    <header style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px"><h2 id="newsT" style="font-size:20px">Голонет · все новости</h2><button class="btn" type="button" data-close-news>Закрыть</button></header>
+    <div class="news-full" id="newsFull"></div>
+  </div>
+</div>
 <script type="module" src="js/sync.js"></script>
 <script src="js/app.js"></script>
 </body>
