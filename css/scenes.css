@@ -1,0 +1,86 @@
+/* Анимации живых сцен планет (js/scenes.js). px в transform = единицы viewBox 1200×420. */
+
+/* Под постерами оставляем полосу-«сцену»: там видно землю планеты и персонажей.
+   Пейзаж на широких экранах масштабируется по ширине (meet), 120 единиц снизу ≈ 10vw. */
+@media (min-width: 700px) {
+  .hero-in { padding-bottom: calc(10vw + 12px); }
+}
+@keyframes sc-cross   { from { transform: translateX(-180px); } to { transform: translateX(1380px); } }
+@keyframes sc-cross-l { from { transform: translateX(1380px); } to { transform: translateX(-180px); } }
+.sc-fly   { animation: sc-cross   var(--d, 30s) linear var(--dl, 0s) infinite; }
+.sc-fly-l { animation: sc-cross-l var(--d, 30s) linear var(--dl, 0s) infinite; }
+
+/* Лотал */
+.sc-blade { transform-box: fill-box; transform-origin: 50% 100%; animation: sc-sway 3.2s ease-in-out var(--dl, 0s) infinite alternate; }
+@keyframes sc-sway { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+.sc-wolf { animation: sc-wolf 26s ease-in-out infinite; }
+@keyframes sc-wolf { 0%, 6% { opacity: 0; } 14%, 62% { opacity: 1; } 72%, 100% { opacity: 0; } }
+.sc-blink { animation: sc-blink 4s steps(1) infinite; }
+@keyframes sc-blink { 0%, 92% { opacity: 1; } 93%, 96% { opacity: 0; } 97% { opacity: 1; } }
+.sc-hop { animation: sc-hop .45s ease-in-out infinite alternate; }
+@keyframes sc-hop { from { transform: translateY(0); } to { transform: translateY(-9px); } }
+
+/* Татуин: йавы крадут дроида (цикл 16 с) */
+.sc-bob { animation: sc-bob .32s ease-in-out infinite alternate; }
+@keyframes sc-bob { from { transform: translateY(0); } to { transform: translateY(-2px); } }
+.sc-jw1 { animation: sc-jw1 16s linear infinite; }
+@keyframes sc-jw1 {
+  0%   { transform: translate(190px, 12px); opacity: 1; }
+  26%  { transform: translate(34px, 12px); }
+  55%  { transform: translate(34px, 12px); }
+  92%  { transform: translate(-426px, 12px); opacity: 1; }
+  93%, 99% { transform: translate(190px, 12px); opacity: 0; }
+  100% { transform: translate(190px, 12px); opacity: 1; }
+}
+.sc-jw2 { animation: sc-jw2 16s linear infinite; }
+@keyframes sc-jw2 {
+  0%, 38% { transform: translate(240px, 12px); opacity: 1; }
+  54%  { transform: translate(-26px, 12px); }
+  55%  { transform: translate(-26px, 12px); }
+  92%  { transform: translate(-486px, 12px); opacity: 1; }
+  93%, 99% { transform: translate(240px, 12px); opacity: 0; }
+  100% { transform: translate(240px, 12px); opacity: 1; }
+}
+.sc-r5 { transform-box: fill-box; transform-origin: 50% 100%; animation: sc-r5 16s ease-in-out infinite; }
+@keyframes sc-r5 {
+  0%, 31% { transform: translateX(0) rotate(0); opacity: 1; }
+  35%  { transform: translateX(0) rotate(-84deg); }
+  55%  { transform: translateX(0) rotate(-84deg); }
+  92%  { transform: translateX(-460px) rotate(-84deg); opacity: 1; }
+  93%, 97% { transform: translateX(0) rotate(0); opacity: 0; }
+  100% { transform: translateX(0) rotate(0); opacity: 1; }
+}
+.sc-zap { transform-box: fill-box; transform-origin: center; opacity: 0; animation: sc-zap 16s ease-out infinite; }
+@keyframes sc-zap { 0%, 29% { opacity: 0; transform: scale(.3); } 31% { opacity: .9; transform: scale(.6); } 35% { opacity: 0; transform: scale(1.5); } 100% { opacity: 0; } }
+
+/* Корусант */
+.sc-siren { fill: #ff2d3d; animation: sc-siren .5s steps(1) infinite; }
+@keyframes sc-siren { 0% { fill: #ff2d3d; } 50% { fill: #2d7dff; } }
+.sc-beam { transform-box: fill-box; transform-origin: 50% 100%; animation: sc-beam 11s ease-in-out infinite alternate; }
+.sc-beam.b { animation-duration: 14s; animation-direction: alternate-reverse; }
+@keyframes sc-beam { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
+.sc-win { animation: sc-win var(--d, 5s) steps(1) infinite; }
+@keyframes sc-win { 0% { opacity: .9; } 50% { opacity: .1; } }
+
+/* Хот */
+.sc-leg { transform-box: fill-box; transform-origin: 50% 0; animation: sc-step 1.8s ease-in-out infinite alternate; }
+.sc-leg.b { animation-delay: -.9s; }
+@keyframes sc-step { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
+.sc-snow { animation: sc-snow var(--d, 9s) linear var(--dl, 0s) infinite; }
+@keyframes sc-snow { from { transform: translate(0, -30px); } to { transform: translate(var(--x, 0px), 440px); } }
+
+/* Мустафар */
+.sc-flow { animation: sc-flow 5s linear infinite; }
+.sc-flow.b { animation-duration: 3.4s; }
+@keyframes sc-flow { to { stroke-dashoffset: -180; } }
+.sc-ember { animation: sc-ember var(--d, 5s) ease-out var(--dl, 0s) infinite; }
+@keyframes sc-ember { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-170px); opacity: 0; } }
+.sc-geyser { transform-box: fill-box; transform-origin: 50% 100%; animation: sc-geyser 7s ease-out var(--dl, 0s) infinite; }
+@keyframes sc-geyser { 0%, 68% { transform: scaleY(0); opacity: 0; } 75% { transform: scaleY(1); opacity: 1; } 88% { transform: scaleY(.55); opacity: .7; } 100% { transform: scaleY(0); opacity: 0; } }
+.sc-pulse { animation: sc-pulse 2.6s ease-in-out infinite alternate; }
+@keyframes sc-pulse { from { opacity: .45; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="sc-"] { animation: none !important; }
+  .sc-zap { opacity: 0; }
+}

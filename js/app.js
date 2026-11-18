@@ -44,7 +44,8 @@ const PLANETS={
   d:"Вулканический мир рек лавы и чёрного базальта. Здесь Оби-Ван сразился с Энакином, а позже Вейдер построил свой замок прямо над потоком магмы.",
   f:"Климат: вулканический · Появления: «Месть ситхов», «Изгой-один», «Оби-Ван Кеноби», «Повстанцы»"}
 };
-function landSVG(p){
+function landSVG(p){const s=(window.SCENES||{})[p]||{};return (s.back||"")+baseLand(p)+(s.front||"");}
+function baseLand(p){
  const sky=`<defs><linearGradient id="g_${p}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--l2)"/><stop offset="1" stop-color="var(--l3)"/></linearGradient></defs>`;
  if(p==="tatooine")return sky+`<circle cx="880" cy="140" r="46" fill="var(--orb)" opacity=".95"/><circle cx="975" cy="175" r="30" fill="var(--orb)" opacity=".8"/>
 <path d="M0 300 C180 250 300 270 470 290 S760 240 960 270 1120 300 1200 285 V420 H0Z" fill="var(--l1)"/>
@@ -350,9 +351,13 @@ function renderEras(){
  $("#eras").innerHTML=ERAS.map(er=>{const es=D.filter(e=>e.era===er.id&&e.st==="out"&&(!e.kids||F.kids));let t=0,n=0;es.forEach(e=>e.units.forEach(u=>{t++;if(watched.has(u.k))n++;}));
   return`<button class="era-b" type="button" data-era="${er.id}"><small>${eraT(er,"y")}</small><strong>${eraT(er,"t")}</strong><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></button>`;}).join("");
 }
+/* на широких экранах пейзаж целиком по ширине (видна вся сцена), на телефоне — с обрезкой по краям */
+const wideMQ=window.matchMedia("(min-width: 700px)");
+function fitLand(){$("#land").setAttribute("preserveAspectRatio",wideMQ.matches?"xMidYMax meet":"xMidYMax slice");}
+wideMQ.addEventListener?.("change",fitLand);
 function applyTheme(){
  document.documentElement.setAttribute("data-planet",theme);
- $("#land").innerHTML=landSVG(theme);
+ $("#land").innerHTML=landSVG(theme);fitLand();
  $("#brand").textContent=L("Голоархив","Holoarchive")+" · "+plT(theme,"n");
  renderMascot();
 }
