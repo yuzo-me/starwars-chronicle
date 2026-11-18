@@ -7,7 +7,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2246%22 fill=%22%231d1830%22/%3E%3Cpath d=%22M50 14l9 26h27l-22 16 8 27-22-17-22 17 8-27-22-16h27z%22 fill=%22%23d8c467%22/%3E%3C/svg%3E">
 <title>Хроники Галактики</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@500;700;900&family=Golos+Text:wght@400;500;600;700;800&family=Martian+Mono:wght@400;600&display=swap">
 <style>
 html{-webkit-text-size-adjust:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}
 /* Layout: planet-landscape hero → sticky control bar → era strip → chronological rail of entries with expandable episode checklists */
@@ -249,19 +250,121 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 <link rel="stylesheet" href="css/chronicle.css">
+<link rel="stylesheet" href="css/fx.css">
 </head>
 <body>
 
 <div class="sky" aria-hidden="true">
   <div class="stars"></div><div class="stars b"></div>
-  <svg class="sd" viewBox="0 0 400 120"><path d="M0 94L330 50L352 52L400 60V104H18Z"/><rect x="300" y="26" width="46" height="26" rx="2"/><rect x="316" y="14" width="18" height="14"/><circle cx="312" cy="12" r="5"/><circle cx="338" cy="12" r="5"/><path d="M60 100L330 70" stroke="var(--bg)" stroke-width="1.5" opacity=".5"/></svg>
-  <svg class="sd2" viewBox="0 0 400 120"><path d="M0 94L330 50L352 52L400 60V104H18Z"/><rect x="300" y="26" width="46" height="26" rx="2"/><circle cx="312" cy="22" r="5"/><circle cx="338" cy="22" r="5"/></svg>
-  <svg class="ship" style="--y0:30vh;--y1:22vh;animation-duration:34s;animation-delay:-6s" viewBox="0 0 100 60"><path d="M6 2h8l4 28-4 28H6L2 30Z M86 2h8l4 28-4 28h-8l-4-28Z"/><rect x="16" y="27" width="68" height="6"/><circle cx="50" cy="30" r="13"/><circle cx="50" cy="30" r="6" fill="var(--bg)"/></svg>
-  <svg class="ship" style="--y0:34vh;--y1:27vh;animation-duration:34s;animation-delay:-4.6s;width:40px" viewBox="0 0 100 60"><path d="M6 2h8l4 28-4 28H6L2 30Z M86 2h8l4 28-4 28h-8l-4-28Z"/><rect x="16" y="27" width="68" height="6"/><circle cx="50" cy="30" r="13"/><circle cx="50" cy="30" r="6" fill="var(--bg)"/></svg>
-  <svg class="ship" style="--y0:26vh;--y1:19vh;animation-duration:34s;animation-delay:-4.2s;width:36px" viewBox="0 0 100 60"><path d="M6 2h8l4 28-4 28H6L2 30Z M86 2h8l4 28-4 28h-8l-4-28Z"/><rect x="16" y="27" width="68" height="6"/><circle cx="50" cy="30" r="13"/><circle cx="50" cy="30" r="6" fill="var(--bg)"/></svg>
-  <svg class="ship x" style="--y0:68vh;--y1:58vh;animation-duration:26s;animation-delay:-14s;width:70px" viewBox="0 0 100 70"><path d="M0 35L40 29H94V41H40Z"/><path d="M44 29L30 3H22L32 29ZM44 41L30 67H22L32 41Z"/><rect x="18" y="0" width="16" height="5"/><rect x="18" y="65" width="16" height="5"/><rect x="84" y="31" width="14" height="8"/></svg>
-  <svg class="ship" style="--y0:84vh;--y1:90vh;animation-duration:48s;animation-delay:-30s;width:46px" viewBox="0 0 100 60"><path d="M6 2h8l4 28-4 28H6L2 30Z M86 2h8l4 28-4 28h-8l-4-28Z"/><rect x="16" y="27" width="68" height="6"/><circle cx="50" cy="30" r="13"/><circle cx="50" cy="30" r="6" fill="var(--bg)"/></svg>
-  <svg class="ship x" style="--y0:12vh;--y1:16vh;animation-duration:60s;animation-delay:-40s;width:110px" viewBox="0 0 120 70"><circle cx="58" cy="35" r="30"/><path d="M58 5L100 22V48L58 65Z"/><rect x="2" y="30" width="30" height="10" rx="4"/><circle cx="58" cy="35" r="8" fill="var(--bg)" opacity=".5"/></svg>
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <radialGradient id="g-ball" cx="38%" cy="35%" r="70%"><stop offset="0" stop-color="#c9ced4"/><stop offset=".6" stop-color="#8a9199"/><stop offset="1" stop-color="#4c535b"/></radialGradient>
+      <linearGradient id="g-hull" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3c9cf"/><stop offset=".55" stop-color="#8d959e"/><stop offset="1" stop-color="#4e565f"/></linearGradient>
+      <linearGradient id="g-white" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1efe9"/><stop offset="1" stop-color="#b9b4aa"/></linearGradient>
+      <radialGradient id="g-ds" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#b8bec5"/><stop offset=".7" stop-color="#6c737c"/><stop offset="1" stop-color="#30353b"/></radialGradient>
+      <filter id="f-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4"/></filter>
+
+      <!-- TIE-истребитель: ракурс спереди, шестигранные крылья-панели -->
+      <symbol id="tie" viewBox="0 0 120 100">
+        <g stroke="#9aa1a9" stroke-width="1.2" stroke-linejoin="round">
+          <path d="M5 8L17 1L21 50L17 99L5 92L1 50Z" fill="#2c3138"/>
+          <path d="M115 8L103 1L99 50L103 99L115 92L119 50Z" fill="#2c3138"/>
+        </g>
+        <g stroke="#5f6770" stroke-width=".9">
+          <path d="M11 50L5 8M11 50L17 1M11 50L21 50M11 50L17 99M11 50L5 92M11 50L1 50"/>
+          <path d="M109 50L115 8M109 50L103 1M109 50L99 50M109 50L103 99M109 50L115 92M109 50L119 50"/>
+        </g>
+        <rect x="20" y="45" width="24" height="10" rx="2" fill="#7d858e"/><rect x="76" y="45" width="24" height="10" rx="2" fill="#7d858e"/>
+        <rect x="20" y="48" width="24" height="2" fill="#5a616a"/><rect x="76" y="48" width="24" height="2" fill="#5a616a"/>
+        <circle cx="60" cy="50" r="19" fill="url(#g-ball)" stroke="#4c535b"/>
+        <circle cx="60" cy="50" r="10.5" fill="#12161c" stroke="#6f7781" stroke-width="1.6"/>
+        <path d="M60 39.5V60.5M49.5 50H70.5M52.6 42.6L67.4 57.4M67.4 42.6L52.6 57.4" stroke="#6f7781" stroke-width="1.1"/>
+        <circle cx="60" cy="50" r="3.2" fill="#2a3038" stroke="#6f7781"/>
+        <circle cx="54" cy="61" r="1.8" fill="#3a4048"/><circle cx="66" cy="61" r="1.8" fill="#3a4048"/>
+      </symbol>
+
+      <!-- X-wing: вид сверху, нос вправо, S-крылья раскрыты буквой X -->
+      <symbol id="xwing" viewBox="0 0 170 120">
+        <ellipse cx="22" cy="40" rx="8" ry="6" fill="#ff5f7e" filter="url(#f-glow)"/>
+        <ellipse cx="22" cy="80" rx="8" ry="6" fill="#ff5f7e" filter="url(#f-glow)"/>
+        <path d="M44 52L60 52L68 12L50 9Z" fill="url(#g-white)" stroke="#8c877e"/>
+        <path d="M44 68L60 68L68 108L50 111Z" fill="url(#g-white)" stroke="#8c877e"/>
+        <path d="M50 13L67 16L66 22L49 19Z M49 101L66 98L67 104L50 107Z" fill="#c8392e"/>
+        <rect x="50" y="8" width="78" height="3.4" rx="1.5" fill="#a39e95"/><rect x="128" y="8.6" width="16" height="2.2" fill="#6e6a63"/>
+        <rect x="50" y="108.6" width="78" height="3.4" rx="1.5" fill="#a39e95"/><rect x="128" y="109.2" width="16" height="2.2" fill="#6e6a63"/>
+        <rect x="22" y="34" width="38" height="12" rx="5" fill="#bfbab0" stroke="#8c877e"/>
+        <rect x="22" y="74" width="38" height="12" rx="5" fill="#bfbab0" stroke="#8c877e"/>
+        <rect x="22" y="36" width="5" height="8" rx="2" fill="#5b5752"/><rect x="22" y="76" width="5" height="8" rx="2" fill="#5b5752"/>
+        <path d="M24 52L122 54L162 59L162 61L122 66L24 68Z" fill="url(#g-white)" stroke="#8c877e"/>
+        <path d="M134 55.5L162 59L162 61L134 64.5Z" fill="#d9d4c9"/>
+        <rect x="112" y="54" width="5" height="12" fill="#c8392e"/><rect x="104" y="54" width="3" height="12" fill="#c8392e"/>
+        <path d="M74 54.5L100 55.5L106 60L100 64.5L74 65.5Z" fill="#26323f" stroke="#7a756c"/>
+        <path d="M84 55V65M93 55.5V64.5" stroke="#7a756c" stroke-width=".8"/>
+        <circle cx="66" cy="60" r="4.5" fill="#eef1f6" stroke="#8c877e"/><circle cx="66" cy="60" r="1.6" fill="#2f6fd6"/>
+      </symbol>
+
+      <!-- «Тысячелетний сокол»: вид сверху, мандибулы влево -->
+      <symbol id="falcon" viewBox="0 0 150 120">
+        <path d="M128 34A46 46 0 0 1 128 86" fill="none" stroke="#7fd8ff" stroke-width="8" filter="url(#f-glow)"/>
+        <path d="M128 34A46 46 0 0 1 128 86" fill="none" stroke="#d6f4ff" stroke-width="3"/>
+        <path d="M48 33L6 40L6 54L44 54Z" fill="#d3d0c8" stroke="#8f8b83"/>
+        <path d="M44 66L6 66L6 80L48 87Z" fill="#d3d0c8" stroke="#8f8b83"/>
+        <path d="M6 54H44V66H6Z" fill="#3b3f45"/>
+        <circle cx="86" cy="60" r="46" fill="#d3d0c8" stroke="#8f8b83" stroke-width="1.4"/>
+        <g stroke="#a9a59c" stroke-width="1"><path d="M86 14V44M86 76V106M40 60H70M102 60H132M53 27L74 48M98 72L119 93M53 93L74 72M98 48L119 27"/></g>
+        <circle cx="86" cy="60" r="16" fill="#bfbbb2" stroke="#8f8b83"/>
+        <circle cx="86" cy="60" r="7" fill="#7c7870"/><rect x="82" y="50" width="8" height="5" fill="#5d5a54"/>
+        <rect x="58" y="28" width="16" height="10" fill="#b4b0a7"/><rect x="104" y="80" width="18" height="10" fill="#b4b0a7"/>
+        <circle cx="100" cy="36" r="8" fill="#ece9e2" stroke="#8f8b83"/><circle cx="100" cy="36" r="2.4" fill="#8f8b83"/>
+        <path d="M66 95L44 108" stroke="#c6c2b9" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="40" cy="110" r="8" fill="#c6c2b9" stroke="#8f8b83"/><path d="M34 110a6 6 0 0 1 6-6" stroke="#2b3a4a" stroke-width="4" fill="none"/>
+      </symbol>
+
+      <!-- Звёздный разрушитель класса «Империал»: вид сбоку, нос влево -->
+      <symbol id="destroyer" viewBox="0 0 420 130">
+        <path d="M0 98L300 52L352 50L400 58V108H22Z" fill="url(#g-hull)" stroke="#3e454d"/>
+        <path d="M0 98L300 74L400 80V108H22Z" fill="#4b525a" opacity=".85"/>
+        <path d="M40 96L300 63M80 98L320 70M150 99L340 76" stroke="#3a4048" stroke-width="1"/>
+        <path d="M250 52H330V44H262Z" fill="#9aa2ab"/><path d="M276 44H330V36H286Z" fill="#a8b0b8"/>
+        <rect x="300" y="22" width="40" height="14" fill="#b6bdc4" stroke="#5b636c"/>
+        <rect x="312" y="12" width="16" height="10" fill="#9aa2ab"/>
+        <circle cx="310" cy="10" r="5" fill="#c9ced3"/><circle cx="330" cy="10" r="5" fill="#c9ced3"/>
+        <rect x="302" y="27" width="36" height="2" fill="#2a3038"/>
+        <g fill="#8fd6ff" filter="url(#f-glow)"><circle cx="404" cy="68" r="7"/><circle cx="404" cy="86" r="9"/><circle cx="404" cy="100" r="6"/></g>
+        <g fill="#e6f8ff"><circle cx="402" cy="68" r="3"/><circle cx="402" cy="86" r="4"/><circle cx="402" cy="100" r="2.5"/></g>
+      </symbol>
+
+      <!-- Звезда Смерти -->
+      <symbol id="deathstar" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="48" fill="url(#g-ds)"/>
+        <path d="M2 48Q50 56 98 48" stroke="#2a2f35" stroke-width="2.4" fill="none"/>
+        <circle cx="34" cy="30" r="10" fill="#565d65" stroke="#2f343a" stroke-width="1.5"/><circle cx="34" cy="30" r="2.6" fill="#2f343a"/>
+        <path d="M10 30Q50 36 90 30M8 66Q50 72 92 66M18 82Q50 88 82 82" stroke="#4d545c" stroke-width=".8" fill="none" opacity=".7"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <svg class="deathstar"><use href="#deathstar"/></svg>
+  <svg class="sd"><use href="#destroyer"/></svg>
+  <svg class="sd2"><use href="#destroyer"/></svg>
+
+  <!-- погоня: X-wing уходит, два TIE за ним стреляют -->
+  <div class="chase" style="--y0:58vh;--y1:46vh;--dur:30s;--delay:-8s">
+    <svg class="ship-x"><use href="#xwing"/></svg>
+    <svg class="ship-t t1"><use href="#tie"/></svg>
+    <svg class="ship-t t2"><use href="#tie"/></svg>
+    <i class="bolt g b1"></i><i class="bolt g b2"></i><i class="bolt r b3"></i>
+  </div>
+  <!-- звено из трёх TIE -->
+  <div class="chase trio" style="--y0:22vh;--y1:30vh;--dur:42s;--delay:-24s">
+    <svg class="ship-t"><use href="#tie"/></svg>
+    <svg class="ship-t s2"><use href="#tie"/></svg>
+    <svg class="ship-t s3"><use href="#tie"/></svg>
+  </div>
+  <!-- «Сокол» летит навстречу -->
+  <div class="chase back" style="--y0:82vh;--y1:70vh;--dur:52s;--delay:-34s">
+    <svg class="ship-f"><use href="#falcon"/></svg>
+  </div>
 </div>
 
 <div class="hero" id="hero">

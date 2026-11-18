@@ -227,7 +227,7 @@ function card(e){
  const status=soon?(e.st==="tba"?`<span class="pill soon">Ожидается в 2027</span>`:`<span class="pill soon">Скоро</span> <span class="cd">${fmtDate(e.r)} · через ${daysTo(e.r)} дн.</span>`):`<span class="pill">${new Date(e.r).getFullYear()}</span>`;
  const len=e.k==="film"?(e.m?`<span class="pill">${Math.floor(e.m/60)} ч ${e.m%60} мин</span>`:""):(e.eps?`<span class="pill">${e.units.length} ${plural(e.units.length,"пункт","пункта","пунктов")}</span>`:"");
  const isOpen=open.has(e.id);
- let h=`<article class="card ${done?"done":""} ${soon?"soon":""}" id="c-${e.id}">
+ let h=`<article class="card ${done?"done":""} ${soon?"soon":""}" id="c-${e.id}" data-era="${e.era}">
  <div class="gl"><div class="glow" style="background-image:url('${posterOf(e)}')"></div></div>
  <div class="yr">${esc(e.yl)}</div>
  <div class="c-head">
@@ -324,11 +324,44 @@ function renderPlanets(){
 function themeVars(id){const prev=document.documentElement.getAttribute("data-planet");document.documentElement.setAttribute("data-planet",id);const cs=getComputedStyle(document.documentElement);const o={};["--sky1","--sky2","--sky3","--l1","--l2","--l3","--orb","--acc","--acc2"].forEach(k=>o[k]=cs.getPropertyValue(k).trim());document.documentElement.setAttribute("data-planet",prev);return o;}
 
 /* ============ EVENTS ============ */
-function toggle(k){watched.has(k)?watched.delete(k):watched.add(k);persist();render();}
+/* ============ ОТКЛИК НА ДЕЙСТВИЯ ============ */
+let toastT=null, undoSet=null;
+function toast(html,prev){
+ let el=$("#toast");
+ if(!el){el=document.createElement("div");el.id="toast";el.className="toast";el.setAttribute("role","status");document.body.appendChild(el);}
+ undoSet=prev;
+ el.innerHTML=`<span>${html}</span>${prev?'<button class="btn" type="button" id="undoBtn">Отменить</button>':""}`;
+ setTimeout(()=>el.classList.add("show"),20);
+ clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("show"),4200);
+}
+function say(text){
+ const b=$("#bubble"),m=$("#mascot");if(!b||!m)return;
+ b.textContent=MASCOT[theme].n+": "+text;b.hidden=false;
+ m.classList.remove("hop");void m.offsetWidth;m.classList.add("hop");
+ clearTimeout(quipT);quipT=setTimeout(()=>b.hidden=true,4500);
+}
+function leftHours(){let m=0;D.forEach(e=>{if(e.st==="out"&&(!e.kids||F.kids))e.units.forEach(u=>{if(!watched.has(u.k))m+=u.m;});});return Math.round(m/60);}
+function afterChange(keys,added,prev){
+ const e=BY[keys[0].split(":")[0]];if(!e)return;
+ requestAnimationFrame(()=>{
+  keys.forEach(k=>document.querySelectorAll(`[data-u="${k}"] .chk, [data-u="${k}"].chk`).forEach(c=>{c.classList.remove("pop");void c.offsetWidth;c.classList.add("pop");}));
+  document.querySelectorAll(`[data-all="${e.id}"]`).forEach(c=>{c.classList.remove("pop");void c.offsetWidth;c.classList.add("pop");});
+ });
+ const full=e.units.every(u=>watched.has(u.k));
+ if(added&&full){
+  requestAnimationFrame(()=>{const c=document.getElementById("c-"+e.id);if(c){c.classList.remove("flash");void c.offsetWidth;c.classList.add("flash");}});
+  say(`«${e.t}» пройдено! До конца саги ≈${leftHours()} ч.`);
+ }
+ const u=keys.length===1?e.units.find(x=>x.k===keys[0]):null;
+ const name=u&&e.eps?`${esc(u.t)} <span style="opacity:.7">· ${esc(e.t)}</span>`:esc(e.t);
+ toast(`${added?"<b>✓ Просмотрено:</b>":"<b>Снята отметка:</b>"} ${name}`,prev);
+}
+function toggle(k){const prev=new Set(watched);const add=!watched.has(k);add?watched.add(k):watched.delete(k);persist();render();afterChange([k],add,prev);}
 document.addEventListener("click",ev=>{
  const t=ev.target.closest("button");if(!t||t.disabled)return;
  if(t.dataset.u){toggle(t.dataset.u);return;}
- if(t.dataset.all){const e=BY[t.dataset.all];const all=e.units.every(u=>watched.has(u.k));e.units.forEach(u=>all?watched.delete(u.k):watched.add(u.k));persist();render();return;}
+ if(t.dataset.all){const e=BY[t.dataset.all];const prev=new Set(watched);const all=e.units.every(u=>watched.has(u.k));e.units.forEach(u=>all?watched.delete(u.k):watched.add(u.k));persist();render();afterChange(e.units.map(u=>u.k),!all,prev);return;}
+ if(t.id==="undoBtn"&&undoSet){watched=new Set(undoSet);undoSet=null;persist();render();$("#toast").classList.remove("show");return;}
  if(t.dataset.open){const id=t.dataset.open;open.has(id)?open.delete(id):open.add(id);render();return;}
  if(t.dataset.upto){const e=BY[t.dataset.upto];/* отмечает всё до последней отмеченной серии */let last=-1;e.units.forEach((u,i)=>{if(watched.has(u.k))last=i;});e.units.slice(0,last+1).forEach(u=>watched.add(u.k));persist();render();return;}
  if(t.dataset.order){order=t.dataset.order;document.querySelectorAll("[data-order]").forEach(b=>b.setAttribute("aria-pressed",b===t));render();return;}
