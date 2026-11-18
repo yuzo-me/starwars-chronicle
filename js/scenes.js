@@ -4,11 +4,7 @@
 (function(){
  const rnd=i=>{const x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x);};
 
- /* строки -> SVG из прямоугольников (соседние пиксели одного цвета склеиваются) */
- function px(rows,pal,s,cls){cls=cls||{};let o="";
-  rows.forEach((r,y)=>{let x=0;while(x<r.length){const ch=r[x];if(!pal[ch]){x++;continue;}let w=1;while(r[x+w]===ch)w++;
-   o+=`<rect x="${+(x*s).toFixed(2)}" y="${+(y*s).toFixed(2)}" width="${+(w*s+.25).toFixed(2)}" height="${+(s+.25).toFixed(2)}" fill="${pal[ch]}"${cls[ch]?` class="${cls[ch]}"`:""}/>`;x+=w;}});
-  return `<g shape-rendering="crispEdges">${o}</g>`;}
+ const px=window.PX; /* общий рендер из js/pixel.js */
  /* два кадра анимации, сменяются по CSS */
  const frames=(a,b,speed)=>`<g class="sc-fa" style="--fs:${speed}s">${a}</g><g class="sc-fb" style="--fs:${speed}s">${b}</g>`;
 
