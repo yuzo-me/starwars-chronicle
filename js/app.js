@@ -288,8 +288,12 @@ const NEWS=(window.NEWS||[]).slice().sort((a,b)=>b.d.localeCompare(a.d));
 const lastSeen=ls("swc-news-seen")||"";
 function newsCard(n){
  const rel=(n.rel||[]).filter(id=>BY[id]).map(id=>`<button class="rel" type="button" data-detail="${id}">${esc(BY[id].t)}</button>`).join("");
- return `<article class="news"><div class="top"><span class="pill">${esc(n.tag)}</span><time datetime="${n.d}">${fmtDate(n.d)}</time>${lastSeen&&n.d>lastSeen?'<span class="fresh">НОВОЕ</span>':""}</div>
-  <h3>${esc(n.t)}</h3><p>${esc(n.s)}</p>
+ const isPoster=n.img&&n.img.startsWith("posters/");
+ const wide=n.img&&!isPoster?`<div class="n-img"><img src="${esc(n.img)}" alt="" loading="lazy"></div>`:"";
+ const thumb=isPoster?`<img class="n-thumb" src="${esc(n.img)}" alt="" loading="lazy">`:"";
+ const body=n.b?`<div class="n-body">${n.b.split(/\n\n+/).map(p=>`<p>${esc(p)}</p>`).join("")}</div><button class="link n-more" type="button" data-more aria-expanded="false">Подробнее</button>`:"";
+ return `<article class="news ${isPoster?"with-thumb":""}">${wide}<div class="n-in">${thumb}<div class="n-main"><div class="top"><span class="pill">${esc(n.tag)}</span><time datetime="${n.d}">${fmtDate(n.d)}</time>${lastSeen&&n.d>lastSeen?'<span class="fresh">НОВОЕ</span>':""}</div>
+  <h3>${esc(n.t)}</h3><p class="lead-s">${esc(n.s)}</p>${body}</div></div>
   <div class="foot"><a class="src" href="${esc(n.src)}" target="_blank" rel="noopener noreferrer">${esc(n.srcN||"Источник")} ↗</a>${rel}</div></article>`;
 }
 function renderNews(){
@@ -334,6 +338,7 @@ document.addEventListener("click",ev=>{
  if(t.dataset.planet){theme=t.dataset.planet;applyTheme();renderPlanets();persist();return;}
  if(t.dataset.play){playTrailer(t.dataset.play);return;}
  if(t.dataset.detail){$("#newsSheet").hidden=true;openDetail(t.dataset.detail);return;}
+ if(t.hasAttribute("data-more")){const a=t.closest(".news");const o=a.classList.toggle("open");t.textContent=o?"Свернуть":"Подробнее";t.setAttribute("aria-expanded",o);return;}
  if(t.id==="newsAll"){$("#newsFull").innerHTML=NEWS.map(newsCard).join("");$("#newsSheet").hidden=false;return;}
  if(t.hasAttribute("data-close-news")){$("#newsSheet").hidden=true;return;}
  if(t.hasAttribute("data-close")){closeDetail();return;}
