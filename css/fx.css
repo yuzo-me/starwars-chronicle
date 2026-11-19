@@ -170,3 +170,15 @@ button:active:not([disabled]), .btn:active { transform: scale(.94); }
 .pill.book { color: color-mix(in srgb, #c9a0ff var(--era-mix), var(--fg)); }
 .pill.comic { color: color-mix(in srgb, #ff8a5c var(--era-mix), var(--fg)); }
 .card[data-k="book"], .card[data-k="comic"] { border-style: solid; border-left: 3px solid color-mix(in srgb, var(--era, var(--acc)) 70%, transparent); }
+
+/* кнопка входа в шапке */
+.auth-btn { font-weight: 700; }
+.auth-btn:not(.in) { background: var(--acc); color: var(--onacc); border-color: var(--acc); }
+.auth-btn.in { gap: 8px; }
+.auth-btn .au-n { max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.auth-btn .au-x { font-weight: 600; opacity: .65; font-size: .8em; }
+@media (max-width: 520px) {
+  .tb-l { display: none; }
+  .auth-btn .au-x { display: none; }
+  .auth-btn .au-n { max-width: 9ch; }
+}

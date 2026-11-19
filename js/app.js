@@ -241,7 +241,7 @@ const SYNC={
  authFail:["Вход не удался","Sign-in failed"]
 };
 function setSync(s,key,extra){syncKey=[s,key,extra||""];$("#syncDot").className="dot "+(s==="ok"?"ok":s==="warn"?"warn":"");const v=SYNC[key];$("#syncTxt").textContent=(v?(isEN()?v[1]:v[0]):key)+(extra?" · "+extra:"");}
-function setAuthBtn(){const b=$("#authBtn");if(!cloud){b.hidden=true;return;}b.hidden=false;b.textContent=uid?L("Выйти","Sign out"):L("Войти","Sign in");}
+function setAuthBtn(){const b=$("#authBtn");if(!cloud){b.hidden=true;return;}b.hidden=false;b.classList.toggle("in",!!uid);b.innerHTML=uid?`<span class="au-n">${esc("@"+(cloud.userName()||L("аккаунт","account")))}</span><span class="au-x">${L("Выйти","Sign out")}</span>`:"👤 "+L("Войти","Sign in");b.title=uid?L("Нажми, чтобы выйти","Click to sign out"):"";}
 const acct=()=>cloud.userName()||L("аккаунт","account");
 function persist(){
  ls("swc-local",JSON.stringify({w:[...watched],theme}));
