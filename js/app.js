@@ -9,10 +9,10 @@ const L=(ru,en)=>isEN()?en:ru;
 function pl(n,a,b,c,e1,eN){if(isEN())return n===1?e1:eN;n=Math.abs(n)%100;const m=n%10;if(n>10&&n<20)return c;if(m>1&&m<5)return b;if(m===1)return a;return c;}
 const enE=e=>EN.entries[e.id]||{};
 function tx(e,f){
- if(!isEN())return e[f]||"";
+ if(!isEN())return f==="yl"&&e.yl?e.yl.replace(/BBY/g,"ДБЯ").replace(/ABY/g,"ПБЯ"):(e[f]||"");
  const x=enE(e);
  if(f==="t")return x.t||e.o;
- if(f==="d")return x.d||e.d;
+ if(f==="d")return x.d||e.de||e.d;
  if(f==="tip")return x.tip||"";
  if(f==="yl")return x.yl||EN.yl(e.yl);
  if(f==="o"){const o=e.o.replace(/ \(хронологически\)/,"").replace(/ финал$/," finale");return o===x.t?"":o;}
@@ -42,7 +42,10 @@ const PLANETS={
   f:"Климат: ледниковый, тундра · Появления: «Империя наносит ответный удар»"},
  mustafar:{n:"Мустафар",s:"Внешнее Кольцо · сектор Атравис",
   d:"Вулканический мир рек лавы и чёрного базальта. Здесь Оби-Ван сразился с Энакином, а позже Вейдер построил свой замок прямо над потоком магмы.",
-  f:"Климат: вулканический · Появления: «Месть ситхов», «Изгой-один», «Оби-Ван Кеноби», «Повстанцы»"}
+  f:"Климат: вулканический · Появления: «Месть ситхов», «Изгой-один», «Оби-Ван Кеноби», «Повстанцы»"},
+ naboo:{n:"Набу",s:"Средние Рубежи · система Набу",
+  d:"Самая красивая планета Галактики: изумрудные луга, озёра и водопады, а над обрывами — золотые купола Тида. Под водой лежат города гунганов. Родина Падме Амидалы и, по иронии, Шива Палпатина.",
+  f:"Климат: умеренный, луга, болота и озёра · Появления: эпизоды I–III, «Войны клонов», «Оби-Ван Кеноби»"}
 };
 function landSVG(p){const s=(window.SCENES||{})[p]||{};return (s.back||"")+baseLand(p)+(s.front||"");}
 function baseLand(p){
@@ -59,6 +62,21 @@ function baseLand(p){
  if(p==="mustafar")return `<circle cx="1000" cy="110" r="30" fill="var(--orb)" opacity=".35"/><path d="M0 310 L90 220 L150 270 L260 160 L340 260 L430 200 L520 290 L640 180 L740 270 L860 210 L960 300 L1080 200 L1200 270 V420 H0Z" fill="var(--l1)"/>
 <path d="M0 345 C200 330 400 360 620 350 S980 330 1200 352 V372 C980 352 640 380 400 372 S120 360 0 372Z" fill="var(--l3)" opacity=".95"/>
 <path d="M0 372 C200 362 420 385 650 376 S1000 362 1200 376 V420 H0Z" fill="var(--l2)"/>`;
+ if(p==="naboo")return sky+`<circle cx="210" cy="110" r="30" fill="var(--orb)" opacity=".9"/><circle cx="270" cy="80" r="11" fill="var(--orb)" opacity=".55"/>
+<path d="M0 250 L90 190 L170 230 L260 170 L380 240 L470 200 L560 250 L640 215 L720 245 V420 H0Z" fill="#9bbcd0" opacity=".7"/>
+<path d="M700 300 L700 210 Q720 196 760 200 L1200 200 V420 H700Z" fill="#7a8f6a"/>
+<path d="M700 210 Q720 196 760 200 L1200 200 V214 L760 214 Q726 212 712 226Z" fill="#9db08a"/>
+<g fill="#efe3c4"><rect x="820" y="150" width="190" height="52"/><rect x="790" y="168" width="34" height="34"/><rect x="1006" y="168" width="34" height="34"/></g>
+<g fill="#d8cba8"><rect x="830" y="168" width="6" height="34"/><rect x="852" y="168" width="6" height="34"/><rect x="874" y="168" width="6" height="34"/><rect x="954" y="168" width="6" height="34"/><rect x="976" y="168" width="6" height="34"/><rect x="996" y="168" width="6" height="34"/></g>
+<path d="M870 150 A45 45 0 0 1 960 150Z" fill="#d9a441"/><path d="M886 150 A29 29 0 0 1 944 150" fill="none" stroke="#f3cf73" stroke-width="3"/>
+<path d="M792 168 A15 15 0 0 1 822 168Z M1008 168 A15 15 0 0 1 1038 168Z" fill="#d9a441"/><rect x="912" y="96" width="6" height="12" fill="#d9a441"/>
+<rect x="1080" y="120" width="26" height="82" fill="#efe3c4"/><path d="M1080 120 A13 13 0 0 1 1106 120Z" fill="#d9a441"/>
+<path d="M0 300 C160 270 330 300 520 288 S700 300 700 300 V420 H0Z" fill="var(--l1)"/>
+<path d="M0 334 C200 312 420 340 640 328 S1000 306 1200 330 V420 H0Z" fill="var(--l2)"/>
+<path d="M0 352 C260 344 560 362 840 350 S1100 344 1200 352 V364 C980 358 700 372 420 366 S120 362 0 366Z" fill="#9fd0e8" opacity=".85"/>
+<path d="M0 384 C260 368 540 390 820 376 S1100 370 1200 382 V420 H0Z" fill="var(--l3)"/>
+<g fill="#f6e27a">${Array.from({length:26},(_,i)=>`<rect x="${(i*47+13)%1200}" y="${392+(i*7)%22}" width="4" height="4"/>`).join("")}</g>
+<g fill="#f2a7c3">${Array.from({length:18},(_,i)=>`<rect x="${(i*71+40)%1200}" y="${388+(i*11)%26}" width="4" height="4"/>`).join("")}</g>`;
  /* lothal */
  return sky+`<circle cx="930" cy="120" r="38" fill="var(--orb)" opacity=".9"/><circle cx="1010" cy="90" r="14" fill="var(--orb)" opacity=".6"/>
 <path d="M120 300 L132 150 L150 140 L166 160 L176 300Z M250 300 L262 200 L282 196 L290 300Z M760 300 L772 120 L790 108 L812 130 L822 300Z M860 300 L870 210 L890 205 L898 300Z" fill="var(--l1)"/>
@@ -69,7 +87,7 @@ function baseLand(p){
 
 /* ============ POSTERS, CREDITS, TRAILERS ============ */
 const POSTER_ALIAS={cw0:"cw1",cw7a:"cw7",cw7b:"cw7",totj1:"totj",totj4:"totj",totj5:"totj",totj6:"totj",maul2:"maul"};
-const posterOf=e=>"posters/"+(POSTER_ALIAS[e.id]||e.id)+".jpg";
+const posterOf=e=>(e.k==="book"||e.k==="comic")?coverURI(e):"posters/"+(POSTER_ALIAS[e.id]||e.id)+".jpg";
 const CREDITS={
  ep1:["Режиссёр","Джордж Лукас","Лиам Нисон, Юэн Макгрегор, Натали Портман, Джейк Ллойд"],
  ep2:["Режиссёр","Джордж Лукас","Хейден Кристенсен, Юэн Макгрегор, Натали Портман, Кристофер Ли"],
@@ -126,18 +144,37 @@ D.forEach(e=>{
  if(!e.st)e.st=new Date(e.r)>TODAY?"soon":"out";
  e.units=e.eps?e.eps.trim().split("\n").map(l=>{const[c,t,mm]=l.split("|");return{c:c.trim(),t:t.trim(),m:mm?+mm:e.m,k:e.id+":"+c.trim()};}):[{c:"",t:e.t,m:e.m||120,k:e.id}];
 });
-const BY=Object.fromEntries(D.map(e=>[e.id,e]));
+/* книги и комиксы: js/books.js; встраиваются в хронологию между фильмами и сериалами */
+const BOOKS=(window.BOOKS||[]).map(b=>({...b,t:b.ru||b.o,st:new Date(b.r)>TODAY?"soon":"out",units:[{c:"",t:b.ru||b.o,m:0,k:b.id}]}));
+const ERA_IDX=Object.fromEntries(ERAS.map((x,i)=>[x.id,i]));
+const CHRONO=(()=>{const out=[...D];[...BOOKS].sort((a,b)=>a.y-b.y).forEach(b=>{let i=out.findIndex(e=>ERA_IDX[e.era]>ERA_IDX[b.era]||(e.era===b.era&&e.y>b.y));if(i<0)i=out.length;out.splice(i,0,b);});return out;})();
+const ALL=[...D,...BOOKS];
+const BY=Object.fromEntries(ALL.map(e=>[e.id,e]));
 let watched=new Set(), theme="lothal", order="chrono";
-const F={film:true,live:true,anim:true,kids:false,hide:false};
+const F={film:true,live:true,anim:true,book:true,comic:true,kids:false,hide:false};
 const open=new Set();
 try{const c=JSON.parse(ls("swc-local")||"{}");if(c.w)watched=new Set(c.w);if(c.theme&&PLANETS[c.theme])theme=c.theme;}catch(_){}
 const unitName=(e,u)=>e.eps?ut(u):tx(e,"t");
+
+/* ============ ГДЕ СМОТРЕТЬ / ГДЕ ЧИТАТЬ ============ */
+const isRead=e=>e.k==="book"||e.k==="comic";
+const baseTitle=e=>e.o.split(" — ")[0].replace(/\s*\(.*\)$/,"");
+/* JustWatch показывает все легальные сервисы, где тайтл доступен в стране зрителя */
+function watchURL(e){let q=baseTitle(e);if(!/star wars/i.test(q)&&!/^(Andor|Ahsoka|Obi-Wan|The Mandalorian|The Book of Boba Fett|Rogue One|Solo|The Acolyte)/.test(q))q="Star Wars "+q;return "https://www.justwatch.com/us/search?q="+encodeURIComponent(q);}
+function readLinks(e){
+ const q=e.o,links=[];
+ if(e.ru)links.push([`https://www.litres.ru/search/?q=${encodeURIComponent(e.ru)}`,L("ЛитРес (рус.)","LitRes (Russian)")]);
+ if(e.k==="comic"&&e.marvel)links.push([`https://www.marvel.com/search?limit=20&query=${encodeURIComponent(q)}`,"Marvel Unlimited"]);
+ links.push([`https://www.amazon.com/s?k=${encodeURIComponent("Star Wars "+q)}`,"Amazon / Kindle"]);
+ links.push([`https://www.goodreads.com/search?q=${encodeURIComponent("Star Wars "+q)}`,"Goodreads"]);
+ return links.map(([u,n],i)=>`<a class="btn${i?"":" primary"}" href="${u}" target="_blank" rel="noopener noreferrer">${i?"":"📖 "}${n}</a>`).join("");
+}
 
 /* ============ DETAIL ============ */
 let detailId=null;
 const daysTo=r=>Math.ceil((new Date(r)-TODAY)/864e5);
 const inDays=n=>L(`через ${n} дн.`,`in ${n} ${n===1?"day":"days"}`);
-function seqNow(){return (order==="intro"?INTRO.map(id=>BY[id]):order==="release"?[...D].sort((a,b)=>a.r.localeCompare(b.r)):D).filter(e=>!e.kids||F.kids||e.id===detailId);}
+function seqNow(){return (order==="intro"?INTRO.map(id=>BY[id]):order==="release"?[...ALL].sort((a,b)=>a.r.localeCompare(b.r)):CHRONO).filter(e=>F[e.k]!==false).filter(e=>!e.kids||F.kids||e.id===detailId);}
 function renderDetail(){
  const e=BY[detailId];if(!e)return;
  const p=eProg(e),soon=e.st!=="out",c=credOf(e),era=ERAS.find(x=>x.id===e.era);
@@ -153,16 +190,18 @@ function renderDetail(){
    <h2 style="margin:6px 0 4px">${esc(T)}</h2>${O?`<div class="orig">${esc(O)}</div>`:""}
    <div class="meta" style="margin-top:10px">${soon?`<span class="pill soon">${e.st==="tba"?L("Ожидается в 2027","Expected in 2027"):L("Скоро","Soon")+" · "+inDays(daysTo(e.r))}</span>`:`<span class="pill">${new Date(e.r).getFullYear()}</span>`}${e.kids?`<span class="pill">${L("Детское","Kids")}</span>`:""}</div>
    <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
-    ${tid?`<button class="btn primary" type="button" data-play="${tid}">▶ ${L("Смотреть трейлер","Watch trailer")}</button>`:`<a class="btn primary" href="${trailerURL(e)}" target="_blank" rel="noopener noreferrer">▶ ${L("Трейлер на YouTube","Trailer on YouTube")}</a>`}
-    ${soon?"":`<button class="btn" type="button" data-all="${e.id}">${st==="true"?L("Снять отметки","Unmark all"):"✓ "+L("Отметить всё","Mark all watched")}</button>`}
+    ${isRead(e)?readLinks(e):`${tid?`<button class="btn primary" type="button" data-play="${tid}">▶ ${L("Смотреть трейлер","Watch trailer")}</button>`:`<a class="btn primary" href="${trailerURL(e)}" target="_blank" rel="noopener noreferrer">▶ ${L("Трейлер на YouTube","Trailer on YouTube")}</a>`}
+    ${soon?"":`<a class="btn" href="${watchURL(e)}" target="_blank" rel="noopener noreferrer">📺 ${L("Где смотреть","Where to watch")}</a>`}`}
+    ${soon?"":`<button class="btn" type="button" data-all="${e.id}">${st==="true"?L("Снять отметки","Unmark all"):"✓ "+(isRead(e)?L("Прочитано","Mark as read"):L("Отметить всё","Mark all watched"))}</button>`}
    </div></div></div></div>
  <div class="d-body">
   ${tid?trailerBlock(e,tid):""}
   <p style="margin:0;font-size:15px;max-width:70ch">${esc(tx(e,"d"))}</p>${tip?`<div class="tip" style="margin:0">${esc(tip)}</div>`:""}
   <div class="facts-grid">
    <div class="fact"><small>${L("Время в Галактике","In-universe time")}</small><b>${esc(tx(e,"yl"))}</b></div>
-   <div class="fact"><small>${L("Премьера","Premiere")}</small><b>${e.st==="tba"?L("2027, дата не объявлена","2027, date TBA"):fmtDate(e.r)}</b></div>
-   <div class="fact"><small>${e.k==="film"?L("Хронометраж","Runtime"):L("Объём","Length")}</small><b>${e.k==="film"?(e.m?hm(e.m):L("ещё неизвестен","not announced yet")):e.eps?`${e.units.length} ${pl(e.units.length,"пункт","пункта","пунктов","item","items")} · ≈${Math.round(mins/60)} ${L("ч","h")}`:L("ещё неизвестен","not announced yet")}</b></div>
+   <div class="fact"><small>${isRead(e)?L("Выход","Published"):L("Премьера","Premiere")}</small><b>${e.st==="tba"?L("2027, дата не объявлена","2027, date TBA"):fmtDate(e.r)}</b></div>
+   ${isRead(e)?`<div class="fact"><small>${L("Автор","Author")}</small><b>${esc(e.by||"—")}</b></div>${e.ru?`<div class="fact"><small>${L("Русское издание","Russian edition")}</small><b>${esc(e.ru)}</b></div>`:""}`
+   :`<div class="fact"><small>${e.k==="film"?L("Хронометраж","Runtime"):L("Объём","Length")}</small><b>${e.k==="film"?(e.m?hm(e.m):L("ещё неизвестен","not announced yet")):e.eps?`${e.units.length} ${pl(e.units.length,"пункт","пункта","пунктов","item","items")} · ≈${Math.round(mins/60)} ${L("ч","h")}`:L("ещё неизвестен","not announced yet")}</b></div>`}
    ${c?`<div class="fact"><small>${c[0]}</small><b>${esc(c[1])}</b></div><div class="fact" style="grid-column:span 2"><small>${L("В ролях","Cast")}</small><b>${esc(c[2])}</b></div>`:""}
    ${soon?"":`<div class="fact"><small>${L("Твой прогресс","Your progress")}</small><b class="mono">${p.n}/${p.t} · ${Math.round(p.n/p.t*100)}%</b></div>`}
   </div>
@@ -242,7 +281,7 @@ if(window.SWCloud!==undefined)startCloud(window.SWCloud);
 else{setSync("","connecting");window.addEventListener("cloud-ready",e=>startCloud(e.detail),{once:true});}
 
 /* ============ RENDER ============ */
-const KIND=()=>isEN()?{film:"Film",live:"Series",anim:"Animation"}:{film:"Фильм",live:"Сериал",anim:"Анимация"};
+const KIND=()=>isEN()?{film:"Film",live:"Series",anim:"Animation",book:"Novel",comic:"Comic"}:{film:"Фильм",live:"Сериал",anim:"Анимация",book:"Книга",comic:"Комикс"};
 function eProg(e){const n=e.units.filter(u=>watched.has(u.k)).length;return{n,t:e.units.length};}
 function visible(e){
  if(!F[e.k])return false;
@@ -253,9 +292,9 @@ function visible(e){
  return true;
 }
 function ordered(){
- if(order==="release")return [...D].sort((a,b)=>a.r.localeCompare(b.r));
+ if(order==="release")return [...ALL].sort((a,b)=>a.r.localeCompare(b.r));
  if(order==="intro")return INTRO.map(id=>BY[id]);
- return D;
+ return CHRONO;
 }
 const CHECK=`<svg viewBox="0 0 16 16" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>`;
 function epBtn(e,u,soon){const on=watched.has(u.k);return`<button class="ep ${on?"on":""}" type="button" data-u="${u.k}" aria-pressed="${on}" ${soon?"disabled":""}><span class="chk" aria-hidden="true" aria-checked="${on}">${CHECK}</span><code>${esc(u.c)}</code><span>${esc(ut(u))}</span></button>`;}
@@ -266,7 +305,7 @@ function card(e){
  const status=soon?(e.st==="tba"?`<span class="pill soon">${L("Ожидается в 2027","Expected in 2027")}</span>`:`<span class="pill soon">${L("Скоро","Soon")}</span> <span class="cd">${fmtDate(e.r)} · ${inDays(daysTo(e.r))}</span>`):`<span class="pill">${new Date(e.r).getFullYear()}</span>`;
  const len=e.k==="film"?(e.m?`<span class="pill">${hm(e.m)}</span>`:""):(e.eps?`<span class="pill">${e.units.length} ${pl(e.units.length,"пункт","пункта","пунктов","item","items")}</span>`:"");
  const isOpen=open.has(e.id);
- let h=`<article class="card ${done?"done":""} ${soon?"soon":""}" id="c-${e.id}" data-era="${e.era}">
+ let h=`<article class="card ${done?"done":""} ${soon?"soon":""}" id="c-${e.id}" data-era="${e.era}" data-k="${e.k}">
  <div class="gl"><div class="glow" style="background-image:url('${posterOf(e)}')"></div></div>
  <div class="yr">${esc(tx(e,"yl"))}</div>
  <div class="c-head">
@@ -411,7 +450,7 @@ function afterChange(keys,added,prev){
  }
  const u=keys.length===1?e.units.find(x=>x.k===keys[0]):null;
  const name=u&&e.eps?`${esc(ut(u))} <span style="opacity:.7">· ${esc(T)}</span>`:esc(T);
- toast(`<b>${added?"✓ "+L("Просмотрено","Watched"):L("Снята отметка","Unmarked")}:</b> ${name}`,prev);
+ toast(`<b>${added?"✓ "+(isRead(e)?L("Прочитано","Read"):L("Просмотрено","Watched")):L("Снята отметка","Unmarked")}:</b> ${name}`,prev);
 }
 function toggle(k){const prev=new Set(watched);const add=!watched.has(k);add?watched.add(k):watched.delete(k);persist();render();afterChange([k],add,prev);}
 
@@ -437,7 +476,7 @@ document.addEventListener("click",ev=>{
  if(t.hasAttribute("data-close")){closeDetail();return;}
  if(t.id==="mascot"){quip();return;}
  if(t.id==="authBtn"&&cloud){(uid?cloud.signOut():cloud.signIn()).catch(err=>setSync("warn","authFail",err&&err.code||""));return;}
- if(t.id==="themeBtn"){renderPlanets();$("#sheet").hidden=false;$("#sheetX").focus();return;}
+ if(t.id==="themeBtn"){if(window.Galaxy)Galaxy.open();else{renderPlanets();$("#sheet").hidden=false;}return;}
  if(t.id==="sheetX"){$("#sheet").hidden=true;return;}
 });
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")$("#sheet").hidden=true;});
@@ -445,6 +484,27 @@ $("#detail").addEventListener("click",e=>{if(e.target.id==="detail")closeDetail(
 $("#newsSheet").addEventListener("click",e=>{if(e.target.id==="newsSheet")$("#newsSheet").hidden=true;});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#sheet").hidden=true;$("#newsSheet").hidden=true;if(detailId)closeDetail();}});
 $("#q").addEventListener("input",render);
+
+
+/* ============ ОБЛОЖКИ КНИГ И КОМИКСОВ ============
+   Настоящих обложек нет — рисуем свою: цвет эпохи, значок формата, название и автор. */
+const ERA_COL={hr:"#f0c75e",fall:"#62b0ff",empire:"#ff5a4a",reb:"#ff9d42",nr:"#3fd8c2",fo:"#ff4f7a",next:"#b493ff"};
+const coverCache={};
+function coverURI(e){
+ if(coverCache[e.id])return coverCache[e.id];
+ const c=ERA_COL[e.era]||"#d8c467",title=(e.o||"").toUpperCase(),words=title.split(/\s+/),lines=[];let cur="";
+ words.forEach(w=>{if((cur+" "+w).trim().length>13&&cur){lines.push(cur);cur=w;}else cur=(cur+" "+w).trim();});if(cur)lines.push(cur);
+ const L5=lines.slice(0,5),esc2=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+ const comic=e.k==="comic";
+ const icon=comic?`<path d="M60 52h80a8 8 0 0 1 8 8v34a8 8 0 0 1-8 8h-46l-18 14v-14h-16a8 8 0 0 1-8-8V60a8 8 0 0 1 8-8z" fill="${c}"/><text x="100" y="86" font-family="Arial Black,Arial" font-weight="900" font-size="24" fill="#111" text-anchor="middle">POW!</text>`
+  :`<path d="M100 60c-14-8-30-10-44-8v52c14-2 30 0 44 8 14-8 30-10 44-8V52c-14-2-30 0-44 8z" fill="none" stroke="${c}" stroke-width="5" stroke-linejoin="round"/><path d="M100 60v52" stroke="${c}" stroke-width="5"/>`;
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#141826"/><stop offset="1" stop-color="#05060c"/></linearGradient></defs>
+  <rect width="200" height="300" fill="url(#g)"/><rect x="0" y="0" width="200" height="10" fill="${c}"/><rect x="10" y="20" width="180" height="270" fill="none" stroke="${c}" stroke-opacity=".5" stroke-width="2"/>
+  ${icon}<text x="100" y="40" font-family="Arial" font-size="11" letter-spacing="3" fill="${c}" text-anchor="middle">${comic?"STAR WARS · COMIC":"STAR WARS · NOVEL"}</text>
+  ${L5.map((l,i)=>`<text x="100" y="${150+i*22}" font-family="Arial Black,Arial" font-weight="900" font-size="17" fill="#f2efe6" text-anchor="middle">${esc2(l)}</text>`).join("")}
+  <text x="100" y="272" font-family="Arial" font-size="11" fill="#b9bfd0" text-anchor="middle">${esc2((e.by||"").slice(0,30))}</text></svg>`;
+ return coverCache[e.id]="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+}
 
 applyLang();
 {const h=location.hash.slice(1);if(BY[h])openDetail(h);}

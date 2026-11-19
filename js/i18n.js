@@ -69,6 +69,7 @@ window.I18N = {
   tatooine:{n:"Tatooine",s:"Outer Rim · Tatoo system",d:"A desert planet under twin suns, where water is pulled from the air and the Hutts write the laws. Both Skywalkers came from here, Obi-Wan hid here, and Mos Eisley gathered the galaxy's scum and villainy.",f:"Climate: arid desert · Seen in: Episodes I–VI, The Mandalorian, The Book of Boba Fett, Obi-Wan Kenobi"},
   coruscant:{n:"Coruscant",s:"Core Worlds · galactic capital",d:"A city the size of a planet: thousands of levels, from the Senate spires down to depths the sun never reaches. Heart of the Republic, then the Empire. Home of the Jedi Temple and the birthplace of Order 66.",f:"Climate: artificial, one continuous city · Seen in: Episodes I–III, The Clone Wars, Andor, The Acolyte"},
   hoth:{n:"Hoth",s:"Outer Rim · Hoth system",d:"An ice world of blizzards and snowfields where no one survives a night in the open. The Rebel Alliance hid Echo Base here, and its discovery led to one of the galaxy's most famous battles.",f:"Climate: glacial tundra · Seen in: The Empire Strikes Back"},
+  naboo:{n:"Naboo",s:"Mid Rim · Naboo system",d:"The most beautiful planet in the galaxy: emerald meadows, lakes and waterfalls, and Theed's golden domes above the cliffs. Gungan cities lie under the water. Home of Padmé Amidala and, ironically, Sheev Palpatine.",f:"Climate: temperate meadows, swamps and lakes · Seen in: Episodes I–III, The Clone Wars, Obi-Wan Kenobi"},
   mustafar:{n:"Mustafar",s:"Outer Rim · Atravis sector",d:"A volcanic world of lava rivers and black basalt. Obi-Wan fought Anakin here, and Vader later built his castle right over the magma.",f:"Climate: volcanic · Seen in: Revenge of the Sith, Rogue One, Obi-Wan Kenobi, Rebels"}
  },
  mascots: {
@@ -76,6 +77,7 @@ window.I18N = {
   tatooine:{n:"Jawa",q:["Utinni!","Droid for sale. Barely rusty. Barely.","Tip: start with Episode IV, the way audiences did in 1977.","Tatooine has two suns and zero streaming. It's better here."]},
   coruscant:{n:"MSE-6 mouse droid",q:["Bee-dee-dee-dee! (Translation: the lower levels are dangerous after dark.)","Weee-eep! (I saw Order 66. Don't ask.)","Beep-boop. (I recommend Andor. Lots of corridors.)","Weeeee! *flees in panic*"]},
   hoth:{n:"Tauntaun",q:["It's minus sixty outside. Stay in and watch a show.","I freeze in four hours at night. The Empire Strikes Back runs 2 h 4 min. We'll make it.","Sure, I smell terrible. But the archive is cozy.","Tip: after Episode V, don't spoil VI for yourself."]},
+  naboo:{n:"R2-D2",q:["Bee-doo-bee-doo-dee-dee! (Translation: I've been here since Episode I.)","Wheep! (Tip: on Naboo, watch Episode I. I saved the royal ship there.)","Beep-boop. (Don't tell Threepio I was right again.)","Dee-dee-dee-wooo! *spins dome*"]},
   mustafar:{n:"Lava flea",q:["Shhh… careful, the floor is lava.","Tip: maybe don't watch the end of Episode III right before bed.","Vader built his castle here. We're not great neighbors.","Shhh! *scurries across the lava*"]}
  },
  roles: {"Режиссёр":"Director","Создатель":"Creator","Создатели":"Creators","Шоураннер":"Showrunner"},

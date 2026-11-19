@@ -88,3 +88,7 @@
   [class*="sc-"] { animation: none !important; }
   .sc-zap, .sc-fb { opacity: 0; }
 }
+
+/* Набу: водопады */
+.sc-fall { animation: sc-fall .9s linear infinite; }
+@keyframes sc-fall { to { stroke-dashoffset: -24; } }

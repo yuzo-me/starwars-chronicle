@@ -102,7 +102,31 @@
   "d......d........d..d",
   "o......o........o..o"];
 
+ const r2=[
+  ".......ssssss.......",
+  ".....ssbbssbbss.....",
+  "....ssssskkssssss...",
+  "....sbbssssrssbbs...",
+  "....gggggggggggggg..",
+  "..g.wwwwwwwwwwwww.g.",
+  "..g.wbbwwwwwwwbbw.g.",
+  ".gg.wbbwwbbbwwbbw.gg",
+  ".gw.wwwwwbwbwwwww.wg",
+  ".gw.wbbbwwwwwbbbw.wg",
+  ".gw.wwwwwwwwwwwww.wg",
+  ".gw.wbwbwbwbwbwbw.wg",
+  ".gw.wwwwwwwwwwwww.wg",
+  ".gw..wbbbbbbbbbw..wg",
+  ".gw..wwwwwwwwwww..wg",
+  ".gw...ggggggggg...wg",
+  ".gg....ggggggg....gg",
+  "gggg....ggggg...gggg",
+  "gbbg....gbbbg...gbbg",
+  "gggg....ggggg...gggg"];
+
  window.MASCOT_ART={
+  naboo:{n:"R2-D2",svg:svg(r2,{w:"#e9edf2",s:"#c3cad3",b:"#2f5fb3",d:"#1d3a75",k:"#15181d",r:"#e0393e",g:"#8a929c"}),
+   q:["Би-ду-би-ду-ди-ди! (Перевод: я тут с первого эпизода.)","Вуип! (Совет: на Набу смотри I эпизод — там я спас королевский корабль.)","Бип-бууп. (Не говори Трипио, что я опять прав.)","Ди-ди-ди-вуууу! *крутит купол*"]},
   lothal:{n:"Лот-кот",svg:svg(lothcat,{o:"#c98a4b",c:"#efe3c6",i:"#d79a62",y:"#f2c84b",k:"#2a1d14",n:"#c76f5a",w:"#fbf6ea"}),
    q:["Мррр. Лот-коты охраняют этот архив.","Совет: 4 сезон «Повстанцев» — всё, что нужно знать о Лотале.","Если кликнешь ещё раз, я зашиплю. Наверное.","Эзра нас кормил. Ты тоже можешь — отметь серию."]},
   tatooine:{n:"Йава",svg:svg(jawa,{b:"#6e4a2c",d:"#4a311c",k:"#140d08",y:"#ffe680",s:"#2f1f12",p:"#a37b4c",g:"#5b5f66"}),

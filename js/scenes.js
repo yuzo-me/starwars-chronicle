@@ -97,5 +97,23 @@
     ${geyserPx(300,-1)}${geyserPx(880,-4.5)}${embers}`
  };
 
- window.SCENES={lothal,tatooine,coruscant,hoth,mustafar};
+ /* ================= НАБУ ================= */
+ const N1_PAL={y:"#f2c230",c:"#dfe4ea",s:"#9aa3ad",k:"#26323f",e:"#8fd6ff"};
+ const n1=["...........cc.........","eecccyyyyyyyykkyyy....","eecccyyyyyyyyyyyyyyyy.","...ssccccyyyyyyyyyyyyy","eecccyyyyyyyyyyyyyyyy.","eecccyyyyyyyyyyyy.....","...........cc........."];
+ const SHAAK_PAL={b:"#c9a46a",w:"#efe4cc",d:"#5a4a33",k:"#2a2015"};
+ const shaakA=["...bbbbbbb....",".bbbbbbbbbbbb.","bbbbbbbbbbbbbb","bbbwwwwwwbbbkb","bbwwwwwwwwbbbb",".bwwwwwwwwbbb.","..dd..dd..dd..","..d...d....d.."];
+ const shaakB=["...bbbbbbb....",".bbbbbbbbbbbb.","bbbbbbbbbbbbbb","bbbwwwwwwbbbkb","bbwwwwwwwwbbbb",".bwwwwwwwwbbb.","..dd..dd..dd..","...d...d..d..."];
+ const fall=(x,y1,y2,w)=>`<rect x="${x}" y="${y1}" width="${w}" height="${y2-y1}" fill="#e8f6fb" opacity=".55"/>
+   <path class="sc-fall" d="M${x+w/2} ${y1}V${y2}" stroke="#ffffff" stroke-width="${w-2}" stroke-dasharray="10 14" fill="none"/>
+   <ellipse cx="${x+w/2}" cy="${y2}" rx="${w*1.4}" ry="5" fill="#ffffff" opacity=".7" class="sc-pulse"/>`;
+ const shaak=(dl,y,sc)=>`<g class="sc-fly" style="--d:120s;--dl:${dl}s"><g transform="translate(0,${y}) scale(${sc})">${frames(px(shaakA,SHAAK_PAL,2.6),px(shaakB,SHAAK_PAL,2.6),.5)}</g></g>`;
+ const naboo={
+  back:"",
+  front:`${fall(740,214,330,12)}${fall(1052,214,328,10)}${fall(1150,214,326,8)}
+   <g class="sc-fly" style="--d:7s;--dl:-2s"><g transform="translate(0,64)">${px(n1,N1_PAL,2.6)}</g></g>
+   <g class="sc-fly" style="--d:7s;--dl:-1.6s"><g transform="translate(-30,84)">${px(n1,N1_PAL,2.2)}</g></g>
+   ${shaak(-20,366,1)}${shaak(-58,372,.85)}${shaak(-90,368,1.1)}`
+ };
+
+ window.SCENES={lothal,tatooine,coruscant,hoth,mustafar,naboo};
 })();
