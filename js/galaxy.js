@@ -43,6 +43,20 @@
  /* ---------- звук гиперпрыжка (синтез) ---------- */
  let actx=null;
  const muted=()=>ls("swc-mute")==="1";
+ /* тактильный щелчок при повороте карусели: короткий «тик» + лёгкая вибрация на телефоне */
+ function tick(i){
+  try{if(navigator.vibrate)navigator.vibrate(9);}catch(_){}
+  if(muted())return;
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();}catch(_){return;}
+  const a=actx,t=a.currentTime;if(a.state==="suspended")a.resume();
+  const o=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
+  o.type="square";const base=1500+(i%6)*70;o.frequency.setValueAtTime(base,t);o.frequency.exponentialRampToValueAtTime(base*.45,t+.035);
+  f.type="bandpass";f.frequency.value=2200;f.Q.value=1.4;
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+.05);
+  o.connect(f).connect(g).connect(a.destination);o.start(t);o.stop(t+.06);
+  const n=a.createBufferSource(),b=a.createBuffer(1,a.sampleRate*.02,a.sampleRate),ch=b.getChannelData(0);for(let k=0;k<ch.length;k++)ch[k]=(Math.random()*2-1)*(1-k/ch.length);
+  const ng=a.createGain();ng.gain.value=.12;n.buffer=b;n.connect(ng).connect(a.destination);n.start(t);
+ }
  function jumpSound(){
   if(muted())return;
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();}catch(_){return;}
@@ -101,7 +115,7 @@
    b.lastElementChild.style.opacity=k>.93?1:0;
   });
   const front=((Math.round(pos)%N)+N)%N;
-  if(front!==lastFront){lastFront=front;focus(IDS[front]);}
+  if(front!==lastFront){const first=lastFront<0;lastFront=front;focus(IDS[front]);if(!first)tick(front);}
  }
  function focus(id){
   document.documentElement.setAttribute("data-planet",id);
