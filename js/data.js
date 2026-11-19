@@ -445,10 +445,10 @@ S3|Сезон 3 · 13 серий|156`},
  d:"Четверо детей с тихой планеты теряются в Галактике пиратов, а помогает им загадочный Джод На Навуд.",
  eps:`1|This Could Be a Real Adventure
 2|Way, Way Out Past the Barrier
-3|Very Interesting, As an Astronomical Phenomenon
-4|Zero Friends Again
+3|Very Interesting, as an Astrogation Problem
+4|Can't Say I Remember No At Attin
 5|You Have a Lot to Learn About Pirates
-6|Глава 6
+6|Zero Friends Again
 7|We're Gonna Be in So Much Trouble
 8|The Real Good Guys`},
 {id:"mando3",t:"Мандалорец · Сезон 3",o:"The Mandalorian",k:"live",era:"nr",y:9,yl:"9 ПБЯ",r:"2023-03-01",m:40,

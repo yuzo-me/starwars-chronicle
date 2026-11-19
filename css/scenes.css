@@ -92,3 +92,10 @@
 /* Набу: водопады */
 .sc-fall { animation: sc-fall .9s linear infinite; }
 @keyframes sc-fall { to { stroke-dashoffset: -24; } }
+
+/* Телефон: отдельная полоса со сценой планеты под постерами */
+.m-stage { display: none; }
+@media (max-width: 699px) {
+  .m-stage { display: block; width: calc(100% + 32px); max-width: none; height: 150px; margin: 10px -16px 0;
+    background: linear-gradient(180deg, var(--sky1), var(--sky2) 62%, var(--sky3)); border-block: 1px solid var(--line); }
+}

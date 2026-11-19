@@ -250,10 +250,10 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
 .tr-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:var(--acc);color:var(--onacc);display:grid;place-items:center;font-size:26px;padding-left:5px;box-shadow:0 6px 24px color-mix(in srgb,#000 50%,transparent)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
-<link rel="stylesheet" href="css/chronicle.css?v=20261120c">
-<link rel="stylesheet" href="css/fx.css?v=20261120c">
-<link rel="stylesheet" href="css/scenes.css?v=20261120c">
-<link rel="stylesheet" href="css/galaxy.css?v=20261120c">
+<link rel="stylesheet" href="css/chronicle.css?v=20261120d">
+<link rel="stylesheet" href="css/fx.css?v=20261120d">
+<link rel="stylesheet" href="css/scenes.css?v=20261120d">
+<link rel="stylesheet" href="css/galaxy.css?v=20261120d">
 </head>
 <body>
 
@@ -412,6 +412,7 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
     <section class="poster-strip" aria-labelledby="posterTitle">
       <h2 id="posterTitle" data-en="Posters in release order">Постеры по порядку выхода</h2>
       <div class="ribbon" id="ribbon" aria-labelledby="posterTitle"></div>
+      <svg class="m-stage" id="mstage" aria-hidden="true" preserveAspectRatio="xMidYMax slice"></svg>
     </section>
   </div>
 </div>
@@ -428,8 +429,8 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
       <button class="chip" type="button" data-f="film" aria-pressed="true" data-en="Films">Фильмы</button>
       <button class="chip" type="button" data-f="live" aria-pressed="true" data-en="Series">Сериалы</button>
       <button class="chip" type="button" data-f="anim" aria-pressed="true" data-en="Animation">Анимация</button>
-      <button class="chip" type="button" data-f="book" aria-pressed="true" data-en="Novels">Книги</button>
-      <button class="chip" type="button" data-f="comic" aria-pressed="true" data-en="Comics">Комиксы</button>
+      <button class="chip" type="button" data-f="book" aria-pressed="false" data-en="Novels">Книги</button>
+      <button class="chip" type="button" data-f="comic" aria-pressed="false" data-en="Comics">Комиксы</button>
       <button class="chip" type="button" data-f="kids" aria-pressed="false" data-en="Kids">Детское</button>
       <button class="chip" type="button" data-f="hide" aria-pressed="false" data-en="Hide watched">Скрыть просмотренное</button>
     </div>
@@ -464,23 +465,23 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mut)
 </div>
 
 
-<script src="js/data.js?v=20261120c"></script>
-<script src="js/i18n.js?v=20261120c"></script>
-<script src="js/pixel.js?v=20261120c"></script>
-<script src="js/sky-pixel.js?v=20261120c"></script>
-<script src="js/mascots.js?v=20261120c"></script>
-<script src="js/scenes.js?v=20261120c"></script>
-<script src="js/trailers.js?v=20261120c"></script>
-<script src="js/news.js?v=20261120c"></script>
-<script src="js/books.js?v=20261120c"></script>
+<script src="js/data.js?v=20261120d"></script>
+<script src="js/i18n.js?v=20261120d"></script>
+<script src="js/pixel.js?v=20261120d"></script>
+<script src="js/sky-pixel.js?v=20261120d"></script>
+<script src="js/mascots.js?v=20261120d"></script>
+<script src="js/scenes.js?v=20261120d"></script>
+<script src="js/trailers.js?v=20261120d"></script>
+<script src="js/news.js?v=20261120d"></script>
+<script src="js/books.js?v=20261120d"></script>
 <div class="sheet" id="newsSheet" hidden>
   <div class="sheet-in" role="dialog" aria-modal="true" aria-labelledby="newsT" style="padding:0">
     <header style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px"><h2 id="newsT" style="font-size:20px" data-en="Holonet · all news">Голонет · все новости</h2><button class="btn" type="button" data-close-news data-en="Close">Закрыть</button></header>
     <div class="news-full" id="newsFull"></div>
   </div>
 </div>
-<script type="module" src="js/sync.js?v=20261120c"></script>
-<script src="js/app.js?v=20261120c"></script>
-<script src="js/galaxy.js?v=20261120c"></script>
+<script type="module" src="js/sync.js?v=20261120d"></script>
+<script src="js/app.js?v=20261120d"></script>
+<script src="js/galaxy.js?v=20261120d"></script>
 </body>
 </html>

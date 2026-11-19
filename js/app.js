@@ -101,11 +101,11 @@ const CREDITS={
  rogue:["Режиссёр","Гарет Эдвардс","Фелисити Джонс, Диего Луна, Бен Мендельсон, Донни Йен"],
  solo:["Режиссёр","Рон Ховард","Олден Эренрайк, Эмилия Кларк, Дональд Гловер, Вуди Харрельсон"],
  cwfilm:["Режиссёр","Дэйв Филони","Голоса: Мэтт Лантер, Эшли Экштейн, Джеймс Арнольд Тейлор"],
- mandofilm:["Режиссёр","Джон Фавро","Педро Паскаль, Сигурни Уивер"],
- starfighter:["Режиссёр","Шон Леви","Райан Гослинг"],
+ mandofilm:["Режиссёр","Джон Фавро","Педро Паскаль, Джереми Аллен Уайт, Сигурни Уивер"],
+ starfighter:["Режиссёр","Шон Леви","Райан Гослинг, Флинн Грей, Мэтт Смит, Миа Гот"],
  cw:["Создатель","Дэйв Филони","Голоса: Мэтт Лантер, Эшли Экштейн, Джеймс Арнольд Тейлор, Ди Брэдли Бейкер"],
  reb:["Создатели","Дэйв Филони, Саймон Кинберг, Карри Бек","Голоса: Тейлор Грэй, Ванесса Маршалл, Фредди Принц-младший, Стивен Блум"],
- bb:["Создатели","Дэйв Филони, Дженнифер Корбетт, Брэд Рау","Голоса: Ди Брэдли Бейкер, Мишель Энг"],
+ bb:["Создатели","Дэйв Филони, Дженнифер Корбетт","Голоса: Ди Брэдли Бейкер, Мишель Энг"],
  res:["Создатель","Дэйв Филони","Голоса: Кристофер Шон, Скотт Лоуренс, Боби Мойнахан"],
  mando:["Шоураннер","Джон Фавро","Педро Паскаль, Карл Уэзерс, Кэти Сакхофф, Джанкарло Эспозито"],
  boba:["Шоураннер","Джон Фавро","Темуэра Моррисон, Мин-На Вен, Педро Паскаль"],
@@ -117,7 +117,7 @@ const CREDITS={
  totj:["Создатель","Дэйв Филони","Голоса: Эшли Экштейн, Кори Бертон"],
  tote:["Создатель","Дэйв Филони","Голоса: Диана Ли Иносанто, Мередит Сэленджер"],
  tou:["Создатель","Дэйв Филони","Голоса: Ника Футтерман, Кори Бертон"],
- maul:["Шоураннер","Мэтт Мишновец","Голос: Сэм Уитвер"],
+ maul:["Создатели","Дэйв Филони, Мэтт Мишновец","Голоса: Сэм Уитвер, Гидеон Адлон, Вагнер Моура"],
  yja:["Создатель","Майкл Олсон","Детский анимационный сериал"]
 };
 function credOf(e){
@@ -151,7 +151,10 @@ const CHRONO=(()=>{const out=[...D];[...BOOKS].sort((a,b)=>a.y-b.y).forEach(b=>{
 const ALL=[...D,...BOOKS];
 const BY=Object.fromEntries(ALL.map(e=>[e.id,e]));
 let watched=new Set(), theme="lothal", order="chrono";
-const F={film:true,live:true,anim:true,book:true,comic:true,kids:false,hide:false};
+const F={film:true,live:true,anim:true,book:false,comic:false,kids:false,hide:false};
+/* фильтры запоминаются в браузере; книги и комиксы по умолчанию выключены */
+try{const s=JSON.parse(ls("swc-filters")||"{}");for(const k in F)if(typeof s[k]==="boolean")F[k]=s[k];}catch(_){}
+const saveF=()=>ls("swc-filters",JSON.stringify(F));
 const open=new Set();
 try{const c=JSON.parse(ls("swc-local")||"{}");if(c.w)watched=new Set(c.w);if(c.theme&&PLANETS[c.theme])theme=c.theme;}catch(_){}
 const unitName=(e,u)=>e.eps?ut(u):tx(e,"t");
@@ -397,6 +400,7 @@ wideMQ.addEventListener?.("change",fitLand);
 function applyTheme(){
  document.documentElement.setAttribute("data-planet",theme);
  $("#land").innerHTML=landSVG(theme);fitLand();
+ const ms=$("#mstage");if(ms){const fx={lothal:640,tatooine:760,coruscant:600,hoth:560,mustafar:900,naboo:880}[theme]||600;ms.setAttribute("viewBox",`${fx-270} 236 540 184`);ms.innerHTML=landSVG(theme);}
  $("#brand").textContent=L("Голоархив","Holoarchive")+" · "+plT(theme,"n");
  renderMascot();
 }
@@ -464,7 +468,7 @@ document.addEventListener("click",ev=>{
  if(t.dataset.open){const id=t.dataset.open;open.has(id)?open.delete(id):open.add(id);render();return;}
  if(t.dataset.upto){const e=BY[t.dataset.upto];let last=-1;e.units.forEach((u,i)=>{if(watched.has(u.k))last=i;});e.units.slice(0,last+1).forEach(u=>watched.add(u.k));persist();render();return;}
  if(t.dataset.order){order=t.dataset.order;document.querySelectorAll("[data-order]").forEach(b=>b.setAttribute("aria-pressed",b===t));render();return;}
- if(t.dataset.f){F[t.dataset.f]=!F[t.dataset.f];t.setAttribute("aria-pressed",F[t.dataset.f]);render();return;}
+ if(t.dataset.f){F[t.dataset.f]=!F[t.dataset.f];t.setAttribute("aria-pressed",F[t.dataset.f]);saveF();render();return;}
  if(t.dataset.era){if(order!=="chrono"){order="chrono";document.querySelectorAll("[data-order]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.order==="chrono"));render();}const el=document.getElementById("era-"+t.dataset.era);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});return;}
  if(t.dataset.goto){const id=t.dataset.goto;if(BY[id].eps)open.add(id);render();const el=document.getElementById("c-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"center"});return;}
  if(t.dataset.planet){theme=t.dataset.planet;applyTheme();renderPlanets();persist();return;}
@@ -506,5 +510,6 @@ function coverURI(e){
  return coverCache[e.id]="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
 }
 
+document.querySelectorAll("[data-f]").forEach(b=>b.setAttribute("aria-pressed",!!F[b.dataset.f]));
 applyLang();
 {const h=location.hash.slice(1);if(BY[h])openDetail(h);}
