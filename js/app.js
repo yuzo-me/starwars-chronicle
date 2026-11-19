@@ -234,15 +234,15 @@ const SYNC={
  saving:["Сохраняю…","Saving…"],
  synced:["Синхронизировано","Synced"],
  saveFail:["Не удалось сохранить в облако, прогресс сохранён на устройстве","Couldn't save to the cloud. Progress is saved on this device"],
- signIn:["Войди через Google, чтобы прогресс был на всех устройствах. Пока он хранится в этом браузере","Sign in with Google to keep progress on all your devices. For now it's stored in this browser"],
+ signIn:["Войди через GitHub, чтобы прогресс был на всех устройствах. Пока он хранится в этом браузере","Sign in with GitHub to keep progress on all your devices. For now it's stored in this browser"],
  loading:["Загружаю прогресс…","Loading progress…"],
  noSync:["Синхронизация недоступна, прогресс сохраняется в браузере","Sync is unavailable. Progress is saved in this browser"],
  local:["Прогресс хранится в этом браузере","Progress is stored in this browser"],
  authFail:["Вход не удался","Sign-in failed"]
 };
 function setSync(s,key,extra){syncKey=[s,key,extra||""];$("#syncDot").className="dot "+(s==="ok"?"ok":s==="warn"?"warn":"");const v=SYNC[key];$("#syncTxt").textContent=(v?(isEN()?v[1]:v[0]):key)+(extra?" · "+extra:"");}
-function setAuthBtn(){const b=$("#authBtn");if(!cloud){b.hidden=true;return;}b.hidden=false;b.textContent=uid?L("Выйти","Sign out"):L("Войти через Google","Sign in with Google");}
-const acct=()=>cloud.userName()||L("аккаунт Google","Google account");
+function setAuthBtn(){const b=$("#authBtn");if(!cloud){b.hidden=true;return;}b.hidden=false;b.textContent=uid?L("Выйти","Sign out"):L("Войти через ","Sign in with ")+(cloud.provider||"GitHub");}
+const acct=()=>cloud.userName()||L("аккаунт","account");
 function persist(){
  ls("swc-local",JSON.stringify({w:[...watched],theme}));
  if(!cloud||!uid)return;
@@ -258,6 +258,8 @@ async function flush(){
 function onCloudUser(u){
  if(unsub){unsub();unsub=null;}
  uid=u?u.uid:null;setAuthBtn();
+ /* после первого входа на этом устройстве — один раз карта галактики */
+ if(uid&&!ls("swc-galaxy-login-"+uid)){ls("swc-galaxy-login-"+uid,"1");setTimeout(()=>window.Galaxy&&Galaxy.open({first:true}),300);}
  if(!uid){setSync("warn","signIn");return;}
  setSync("","loading");
  let first=true;

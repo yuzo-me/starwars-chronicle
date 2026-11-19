@@ -1,48 +1,60 @@
-// Синхронизация прогресса через Firebase (Auth + Firestore).
-// Если js/firebase-config.js не заполнен, сайт работает только с локальным хранением.
-import { firebaseConfig } from "./firebase-config.js";
+// Синхронизация прогресса через Supabase (вход через GitHub, таблица progress).
+// Если js/supabase-config.js не заполнен, сайт работает только с локальным хранением.
+import { supabaseConfig } from "./supabase-config.js";
 
 const ready = (api) => {
   window.SWCloud = api;
   window.dispatchEvent(new CustomEvent("cloud-ready", { detail: api }));
 };
 
-if (!firebaseConfig || !firebaseConfig.apiKey) {
+if (!supabaseConfig || !supabaseConfig.url || !supabaseConfig.anonKey) {
   ready(null);
 } else {
   try {
-    const V = "10.12.2";
-    const [{ initializeApp }, authM, fsM] = await Promise.all([
-      import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`),
-      import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`),
-      import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`),
-    ]);
-    const app = initializeApp(firebaseConfig);
-    const auth = authM.getAuth(app);
-    const db = fsM.getFirestore(app);
-    const provider = new authM.GoogleAuthProvider();
-    authM.getRedirectResult(auth).catch(() => {});
+    const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm");
+    const sb = createClient(supabaseConfig.url, supabaseConfig.anonKey, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" }
+    });
+    let user = null;
+    const back = () => location.origin + location.pathname;
 
     ready({
-      onAuth: (cb) => authM.onAuthStateChanged(auth, cb),
-      userName: () => auth.currentUser?.displayName || "",
-      async signIn() {
-        try { await authM.signInWithPopup(auth, provider); }
-        catch (e) {
-          if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment"))
-            await authM.signInWithRedirect(auth, provider);
-          else throw e;
-        }
+      provider: "GitHub",
+      onAuth(cb) {
+        sb.auth.getSession().then(({ data }) => { user = data.session?.user || null; cb(user ? { uid: user.id } : null); });
+        sb.auth.onAuthStateChange((ev, session) => {
+          const u = session?.user || null;
+          if ((u?.id || null) === (user?.id || null) && ev !== "SIGNED_IN") return;
+          user = u; cb(u ? { uid: u.id } : null);
+        });
       },
-      signOut: () => authM.signOut(auth),
+      userName: () => user?.user_metadata?.user_name || user?.user_metadata?.full_name || "",
+      signIn: () => sb.auth.signInWithOAuth({ provider: "github", options: { redirectTo: back() } }).then(r => { if (r.error) throw r.error; }),
+      signOut: () => sb.auth.signOut(),
       subscribe(uid, next, err) {
-        return fsM.onSnapshot(fsM.doc(db, "users", uid),
-          (s) => next(s.exists() ? s.data() : null), err);
+        let alive = true;
+        const load = async () => {
+          const { data, error } = await sb.from("progress").select("w,theme").eq("user_id", uid).maybeSingle();
+          if (!alive) return;
+          if (error) { err && err(error); return; }
+          next(data ? { w: data.w || [], theme: data.theme } : null);
+        };
+        load();
+        // живое обновление с других устройств + перечитывание при возвращении на вкладку
+        const ch = sb.channel("progress-" + uid)
+          .on("postgres_changes", { event: "*", schema: "public", table: "progress", filter: "user_id=eq." + uid }, load)
+          .subscribe();
+        const onVis = () => { if (document.visibilityState === "visible") load(); };
+        document.addEventListener("visibilitychange", onVis);
+        return () => { alive = false; sb.removeChannel(ch); document.removeEventListener("visibilitychange", onVis); };
       },
-      save: (uid, data) => fsM.setDoc(fsM.doc(db, "users", uid), { ...data, updatedAt: fsM.serverTimestamp() }),
+      async save(uid, data) {
+        const { error } = await sb.from("progress").upsert({ user_id: uid, w: data.w, theme: data.theme, updated_at: new Date().toISOString() });
+        if (error) throw error;
+      }
     });
   } catch (e) {
-    console.error("Firebase не загрузился", e);
+    console.error("Supabase не загрузился", e);
     ready(null);
   }
 }
