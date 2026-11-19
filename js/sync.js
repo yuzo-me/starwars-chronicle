@@ -1,6 +1,6 @@
 // Синхронизация прогресса через Supabase (вход через GitHub, таблица progress).
 // Если js/supabase-config.js не заполнен, сайт работает только с локальным хранением.
-import { supabaseConfig } from "./supabase-config.js?v=20261120i";
+import { supabaseConfig } from "./supabase-config.js?v=20261120j";
 
 const ready = (api) => {
   window.SWCloud = api;

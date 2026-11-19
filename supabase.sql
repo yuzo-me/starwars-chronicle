@@ -19,3 +19,7 @@ create policy "own progress: update" on public.progress for update using (auth.u
 
 -- Живое обновление между устройствами.
 alter publication supabase_realtime add table public.progress;
+
+-- Доступ к таблице для вошедших пользователей (новые проекты Supabase не выдают его автоматически).
+-- Какие именно строки доступны — по-прежнему решают правила RLS выше.
+grant select, insert, update on public.progress to authenticated;

@@ -234,7 +234,7 @@ const SYNC={
  saving:["Сохраняю…","Saving…"],
  synced:["Синхронизировано","Synced"],
  saveFail:["Не удалось сохранить в облако, прогресс сохранён на устройстве","Couldn't save to the cloud. Progress is saved on this device"],
- signIn:["Войди через GitHub, чтобы прогресс был на всех устройствах. Пока он хранится в этом браузере","Sign in with GitHub to keep progress on all your devices. For now it's stored in this browser"],
+ signIn:["Войди (GitHub или почта), чтобы прогресс был на всех устройствах. Пока он хранится в этом браузере","Sign in (GitHub or email) to keep progress on all your devices. For now it's stored in this browser"],
  loading:["Загружаю прогресс…","Loading progress…"],
  noSync:["Синхронизация недоступна, прогресс сохраняется в браузере","Sync is unavailable. Progress is saved in this browser"],
  local:["Прогресс хранится в этом браузере","Progress is stored in this browser"],
