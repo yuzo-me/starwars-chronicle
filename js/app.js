@@ -241,7 +241,7 @@ const SYNC={
  authFail:["Вход не удался","Sign-in failed"]
 };
 function setSync(s,key,extra){syncKey=[s,key,extra||""];$("#syncDot").className="dot "+(s==="ok"?"ok":s==="warn"?"warn":"");const v=SYNC[key];$("#syncTxt").textContent=(v?(isEN()?v[1]:v[0]):key)+(extra?" · "+extra:"");}
-function setAuthBtn(){const b=$("#authBtn");if(!cloud){b.hidden=true;return;}b.hidden=false;b.textContent=uid?L("Выйти","Sign out"):L("Войти через ","Sign in with ")+(cloud.provider||"GitHub");}
+function setAuthBtn(){const b=$("#authBtn");if(!cloud){b.hidden=true;return;}b.hidden=false;b.textContent=uid?L("Выйти","Sign out"):L("Войти","Sign in");}
 const acct=()=>cloud.userName()||L("аккаунт","account");
 function persist(){
  ls("swc-local",JSON.stringify({w:[...watched],theme}));
@@ -481,14 +481,16 @@ document.addEventListener("click",ev=>{
  if(t.hasAttribute("data-close-news")){$("#newsSheet").hidden=true;return;}
  if(t.hasAttribute("data-close")){closeDetail();return;}
  if(t.id==="mascot"){quip();return;}
- if(t.id==="authBtn"&&cloud){(uid?cloud.signOut():cloud.signIn()).catch(err=>setSync("warn","authFail",err&&err.code||""));return;}
+ if(t.id==="authBtn"&&cloud){if(uid)cloud.signOut().catch(err=>setSync("warn","authFail",err&&err.message||""));else openLogin();return;}
+ if(t.id==="lgGithub"){cloud.signIn().catch(err=>loginMsg(L("Не удалось: ","Failed: ")+(err&&err.message||""),true));return;}
+ if(t.id==="lgClose"){$("#loginSheet").hidden=true;return;}
  if(t.id==="themeBtn"){if(window.Galaxy)Galaxy.open();else{renderPlanets();$("#sheet").hidden=false;}return;}
  if(t.id==="sheetX"){$("#sheet").hidden=true;return;}
 });
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")$("#sheet").hidden=true;});
 $("#detail").addEventListener("click",e=>{if(e.target.id==="detail")closeDetail();});
 $("#newsSheet").addEventListener("click",e=>{if(e.target.id==="newsSheet")$("#newsSheet").hidden=true;});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#sheet").hidden=true;$("#newsSheet").hidden=true;if(detailId)closeDetail();}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("#sheet").hidden=true;$("#newsSheet").hidden=true;if($("#loginSheet"))$("#loginSheet").hidden=true;if(detailId)closeDetail();}});
 $("#q").addEventListener("input",render);
 
 
@@ -513,5 +515,36 @@ function coverURI(e){
 }
 
 document.querySelectorAll("[data-f]").forEach(b=>b.setAttribute("aria-pressed",!!F[b.dataset.f]));
+/* ============ ОКНО ВХОДА: GitHub или ссылка на почту ============ */
+function loginMsg(text,bad){const m=$("#lgMsg");if(!m)return;m.textContent=text;m.style.color=bad?"var(--soon)":"var(--acc2)";}
+function openLogin(){
+ let s=$("#loginSheet");
+ if(!s){s=document.createElement("div");s.className="sheet";s.id="loginSheet";
+  s.innerHTML=`<div class="sheet-in" role="dialog" aria-modal="true" aria-labelledby="lgT" style="max-width:440px"><div style="display:grid;gap:14px">
+   <h2 id="lgT" style="font-size:20px"></h2><p id="lgSub" style="margin:0;color:var(--mut);font-size:14px"></p>
+   <button class="btn primary" type="button" id="lgGithub" style="min-height:46px"></button>
+   <div class="mono" id="lgOr" style="text-align:center;font-size:11px;color:var(--mut)"></div>
+   <form id="lgForm" style="display:grid;gap:8px"><label for="lgEmail" id="lgEmailL" style="font-size:13px;font-weight:600"></label>
+    <input class="search" id="lgEmail" type="email" required autocomplete="email" placeholder="you@example.com" style="flex:none">
+    <button class="btn" type="submit" id="lgSend"></button></form>
+   <div id="lgMsg" role="status" style="font-size:13px;min-height:1.2em"></div>
+   <button class="btn" type="button" id="lgClose"></button></div></div>`;
+  document.body.appendChild(s);
+  s.addEventListener("click",e=>{if(e.target===s)s.hidden=true;});
+  s.querySelector("#lgForm").addEventListener("submit",e=>{e.preventDefault();const em=$("#lgEmail").value.trim();if(!em||!cloud||!cloud.signInEmail)return;
+   $("#lgSend").disabled=true;loginMsg(L("Отправляю…","Sending…"));
+   cloud.signInEmail(em).then(()=>loginMsg(L("Письмо отправлено на ","Email sent to ")+em+L(". Открой ссылку из письма на этом устройстве."," — open the link on this device.")))
+    .catch(err=>loginMsg(L("Не удалось отправить: ","Couldn't send: ")+(err&&err.message||""),true)).finally(()=>$("#lgSend").disabled=false);});
+ }
+ $("#lgT").textContent=L("Вход в архив","Sign in to the archive");
+ $("#lgSub").textContent=L("Вход нужен, только чтобы прогресс был на всех устройствах. Без входа всё сохраняется в этом браузере.","Signing in only syncs your progress across devices. Without it, everything is saved in this browser.");
+ $("#lgGithub").textContent=L("Войти через GitHub","Sign in with GitHub");
+ $("#lgOr").textContent=L("— или по почте, без пароля —","— or by email, no password —");
+ $("#lgEmailL").textContent=L("Email: пришлём ссылку для входа","Email: we'll send you a sign-in link");
+ $("#lgSend").textContent=L("Прислать ссылку","Send link");
+ $("#lgClose").textContent=L("Закрыть","Close");
+ loginMsg("");s.hidden=false;
+}
+
 applyLang();
 {const h=location.hash.slice(1);if(BY[h])openDetail(h);}

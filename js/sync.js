@@ -1,6 +1,6 @@
 // Синхронизация прогресса через Supabase (вход через GitHub, таблица progress).
 // Если js/supabase-config.js не заполнен, сайт работает только с локальным хранением.
-import { supabaseConfig } from "./supabase-config.js";
+import { supabaseConfig } from "./supabase-config.js?v=20261120i";
 
 const ready = (api) => {
   window.SWCloud = api;
@@ -11,7 +11,7 @@ if (!supabaseConfig || !supabaseConfig.url || !supabaseConfig.anonKey) {
   ready(null);
 } else {
   try {
-    const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm");
+    const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/+esm");
     const sb = createClient(supabaseConfig.url, supabaseConfig.anonKey, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" }
     });
@@ -30,6 +30,8 @@ if (!supabaseConfig || !supabaseConfig.url || !supabaseConfig.anonKey) {
       },
       userName: () => user?.user_metadata?.user_name || user?.user_metadata?.full_name || "",
       signIn: () => sb.auth.signInWithOAuth({ provider: "github", options: { redirectTo: back() } }).then(r => { if (r.error) throw r.error; }),
+      // вход по почте: письмо со ссылкой, без пароля
+      signInEmail: (email) => sb.auth.signInWithOtp({ email, options: { emailRedirectTo: back(), shouldCreateUser: true } }).then(r => { if (r.error) throw r.error; }),
       signOut: () => sb.auth.signOut(),
       subscribe(uid, next, err) {
         let alive = true;
